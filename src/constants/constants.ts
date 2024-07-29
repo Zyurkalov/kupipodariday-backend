@@ -1,0 +1,5 @@
+
+export const DEFAULT_VALUES = {
+    about: "Пока ничего не рассказал о себе",
+    avatar: "https://i.pravatar.cc/300",
+}
