@@ -1,4 +1,5 @@
-import Wish from "./wish";
+import { Wish } from "src/wishes/entities/wish.entity";
+import { Whishlist } from "src/whishlists/entities/whishlist.entity";
 
 export default interface User {
     id: number;
@@ -11,5 +12,5 @@ export default interface User {
     updatedAt: string;
     wishes: Wish;
     offers: Wish;
-    wishlist: Wish;
+    wishlist: Whishlist;
 }

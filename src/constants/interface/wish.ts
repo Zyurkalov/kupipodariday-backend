@@ -1,4 +1,5 @@
 import Offer from "./offer";
+import User from "./user";
 
 export default interface Wish {
     id: number;
@@ -11,6 +12,6 @@ export default interface Wish {
     raised: number;
     copied: number;
     description: string;
-    owner: any;
+    owner: User;
     offers: Offer
 }

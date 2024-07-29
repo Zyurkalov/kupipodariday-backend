@@ -1,14 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength, MaxLength, IsOptional } from 'class-validator';
-import IUser from 'src/constants/interface/user';
+import { PickType } from '@nestjs/swagger';
+import { User } from "src/users/entities/user.entity";
 
-export class SigninUserDto {
-    @IsNotEmpty()
-    @IsString()
-    @MaxLength(64)
-    username: IUser['username'];
-
-    @IsNotEmpty()
-    @IsString()
-    @MinLength(2)
-    password: IUser['password'];
-}
+export class SigninUserDto extends PickType(User, ['username', 'password']) {}
