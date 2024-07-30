@@ -1,46 +1,53 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { FindUsersDto } from './dto/find-user.dto';
 import { UpdateUserDto } from 'src/auth/dto/update-user.dto';
 import { UserProfileResponseDto } from './dto/user-profile-response.dto';
+import { UserPublicProfileResponseDto } from './dto/user-public-profile-response.dto';
+import { UserWishesDto } from './dto/user-wihes.dto';
+import { CurrentUser } from 'src/utility/currentUser';
+import { User } from './entities/user.entity';
 
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
+  @ApiOkResponse({ type: UserProfileResponseDto })
   @Get('me')
-  findOwn(@Req() req) {
-    return this.usersService.findOne(123);
+  async findMe(@CurrentUser() user: User): Promise<UserProfileResponseDto> {
+    return await this.usersService.getMe(user);
   }
 
-  // @Patch('me')
-  // async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-  //   return this.usersService.update(+id, updateUserDto);
-  // }
+  @ApiOkResponse({ type: UserProfileResponseDto })
   @Patch('me')
-  async update(@Req() req, @Body() updateUserDto: UpdateUserDto): Promise<any> {
-    const {password, ...userData} = await this.usersService.update(
-      req.user,
-      updateUserDto
-    )
-    // return this.usersService.update(userData, updateUserDto);
-    return 'user'
+  async update(@CurrentUser() user: User, @Body() updateUserDto: UpdateUserDto): Promise<UserProfileResponseDto> {
+    return this.usersService.update(user, updateUserDto);
   }
 
+  @ApiOkResponse({ type: UserWishesDto })
   @Get('me/wishes')
+  async findMyWish(@CurrentUser() user: User): Promise<UserWishesDto[]> {
+    return await this.usersService.getMyWish(user);
+  }
 
-
+  @ApiOkResponse({ type: UserPublicProfileResponseDto })
   @Get(':username')
+  async findOne(@Param('username') userName: string): Promise<UserPublicProfileResponseDto> {
+    return this.usersService.findOne(userName)
+  }
 
-
+  @ApiOkResponse({ type: UserWishesDto })
   @Get(':username/wishes')
+  async getWishes(@Param('username') userName: string): Promise<Array<UserWishesDto>> {
+    return this.usersService.getUserWishes(userName)
+  }
 
-
+  @ApiOkResponse({ type: FindUsersDto })
   @Post('find')
-  hello() {
-    return 'hello'
+  findUsers(@Body() body: FindUsersDto) {
+    return this.usersService.findUsers(body.query)
   }
 
   // @Delete(':id')

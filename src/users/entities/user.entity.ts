@@ -5,6 +5,7 @@ import { Entity, Column } from 'typeorm';
 import { BaseEntityForIdAndDate } from 'src/constants/entity/base.entity';
 import { DEFAULT_VALUES, maxLength_username, maxLength_about, minLength } from 'src/constants/constants';
 import IUser from "src/constants/interface/user";
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User extends BaseEntityForIdAndDate {
@@ -53,6 +54,7 @@ export class User extends BaseEntityForIdAndDate {
         example: 'password123'
     })
     @IsNotEmpty()
+    @Exclude()
     @Column({ select: false })
     password: IUser['password'];
     //-------------------------------------------
