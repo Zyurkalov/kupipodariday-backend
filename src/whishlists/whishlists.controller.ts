@@ -1,8 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { WhishlistsService } from './whishlists.service';
 import { CreateWhishlistDto } from './dto/create-whishlist.dto';
 import { UpdateWhishlistDto } from './dto/update-whishlist.dto';
 
+@ApiTags('wishlist')
 @Controller('wishlistlists')
 export class WhishlistsController {
   constructor(private readonly whishlistsService: WhishlistsService) {}

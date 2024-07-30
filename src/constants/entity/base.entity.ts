@@ -20,7 +20,7 @@ export class BaseEntityForIdAndDate extends BaseEntity {
     createdAt: IdAndDate['date'];
 //-------------------------------------------
     @ApiProperty({
-        description: 'дата обновления'
+        description: 'дата изменения'
     })
     @UpdateDateColumn()
     @IsDate()

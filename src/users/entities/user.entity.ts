@@ -15,53 +15,59 @@ export class User extends BaseEntityForIdAndDate {
     @Length(minLength, maxLength_username)
     @Column({ unique: true })
     username: IUser['about'];
-//-------------------------------------------
-    @ApiProperty({ 
-        description: "информация об пользователе", 
-        example: DEFAULT_VALUES.about, 
+    //-------------------------------------------
+    @ApiProperty({
+        description: "информация об пользователе",
+        example: DEFAULT_VALUES.about,
     })
-    @Column({ 
-        default: DEFAULT_VALUES.about 
+    @Column({
+        default: DEFAULT_VALUES.about
     })
     @IsNotEmpty()
     @IsString()
     @Length(minLength, maxLength_about)
     about: IUser['about'];
-//-------------------------------------------
+    //-------------------------------------------
     @ApiProperty({
         description: "аватар пользователя",
         example: DEFAULT_VALUES.avatar,
     })
-    @Column({ 
-        default: DEFAULT_VALUES.avatar 
+    @Column({
+        default: DEFAULT_VALUES.avatar
     })
     @IsNotEmpty()
     @IsUrl()
     avatar: IUser['avatar'];
-//-------------------------------------------
-    @ApiProperty({ 
-        description: "эл.почта пользователя", 
-        example: DEFAULT_VALUES.email, 
+    //-------------------------------------------
+    @ApiProperty({
+        description: "эл.почта пользователя",
+        example: DEFAULT_VALUES.email,
     })
     @IsNotEmpty()
     @IsEmail()
     @Column({ unique: true })
     email: IUser['email'];
-//-------------------------------------------
-    @ApiProperty({ 
-        description: 'пaроль пользователя', 
-        example: 'password123' 
+    //-------------------------------------------
+    @ApiProperty({
+        description: 'пaроль пользователя',
+        example: 'password123'
     })
     @IsNotEmpty()
     @Column({ select: false })
     password: IUser['password'];
-//-------------------------------------------
-    @ApiProperty()
+    //-------------------------------------------
+    @ApiProperty({
+        description: 'список желаемых подарков'
+    })
     wishes: IUser['wishes'][];
-//-------------------------------------------
-    @ApiProperty()
+    //-------------------------------------------
+    @ApiProperty({
+        description: 'список подарков, на которые скидывается пользователь'
+    })
     offers: IUser['offers'][];
-//-------------------------------------------
-    @ApiProperty()
+    //-------------------------------------------
+    @ApiProperty({
+        description: 'список вишлистов, которые создал пользователь'
+    })
     wishlists: IUser['wishlist'][];
 }

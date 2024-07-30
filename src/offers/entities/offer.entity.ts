@@ -7,23 +7,23 @@ import { IsBoolean, IsNotEmpty, IsNumber } from "class-validator";
 @Entity()
 export class Offer extends BaseEntityForIdAndDate {
 
-    @ApiProperty()
+    @ApiProperty({ description: 'содержит ссылку на товар' })
     @IsNotEmpty()
     item: IOffer['item'];
-//-------------------------------------------
-    @ApiProperty({description: 'количество'})
+    //-------------------------------------------
+    @ApiProperty({ description: 'сумма заявки' })
     @IsNotEmpty()
-    @IsNumber({allowNaN: false, allowInfinity: false})
+    @IsNumber({ allowNaN: false, allowInfinity: false })
     @Column()
     amount: IOffer['amount'];
-//-------------------------------------------
-    @ApiProperty()
+    //-------------------------------------------
+    @ApiProperty({ description: 'флаг, который определяет показывать ли информацию о скидывающемся в списке' })
     @IsNotEmpty()
     @IsBoolean()
-    @Column({default: true})
+    @Column({ default: false })
     hidden: IOffer['hidden'];
-//-------------------------------------------
-    @ApiProperty()
+    //-------------------------------------------
+    @ApiProperty({ description: 'содержит индефикатор желающего скинуться' })
     @IsNotEmpty()
     user: IOffer['user'];
 }

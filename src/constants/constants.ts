@@ -13,3 +13,4 @@ export const maxLength_username = 64
 export const maxLength_about = 200  
 export const maxLength_wishname = 250  
 export const maxLength_description = 1024 
+export const maxLength_wishList = 1500 
