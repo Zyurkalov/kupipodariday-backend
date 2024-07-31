@@ -16,7 +16,8 @@ export class User extends BaseEntityForIdAndDate {
     @Length(minLength, maxLength_username)
     @Column({ unique: true })
     username: IUser['about'];
-    //-------------------------------------------
+
+
     @ApiProperty({
         description: "информация об пользователе",
         example: DEFAULT_VALUES.about,
@@ -28,7 +29,8 @@ export class User extends BaseEntityForIdAndDate {
     @IsString()
     @Length(minLength, maxLength_about)
     about: IUser['about'];
-    //-------------------------------------------
+
+
     @ApiProperty({
         description: "аватар пользователя",
         example: DEFAULT_VALUES.avatar,
@@ -39,7 +41,8 @@ export class User extends BaseEntityForIdAndDate {
     @IsNotEmpty()
     @IsUrl()
     avatar: IUser['avatar'];
-    //-------------------------------------------
+
+
     @ApiProperty({
         description: "эл.почта пользователя",
         example: DEFAULT_VALUES.email,
@@ -48,7 +51,8 @@ export class User extends BaseEntityForIdAndDate {
     @IsEmail()
     @Column({ unique: true })
     email: IUser['email'];
-    //-------------------------------------------
+
+
     @ApiProperty({
         description: 'пaроль пользователя',
         example: 'password123'
@@ -57,17 +61,20 @@ export class User extends BaseEntityForIdAndDate {
     @Exclude()
     @Column({ select: false })
     password: IUser['password'];
-    //-------------------------------------------
+
+
     @ApiProperty({
         description: 'список желаемых подарков'
     })
     wishes: IUser['wishes'][];
-    //-------------------------------------------
+
+
     @ApiProperty({
         description: 'список подарков, на которые скидывается пользователь'
     })
     offers: IUser['offers'][];
-    //-------------------------------------------
+
+
     @ApiProperty({
         description: 'список вишлистов, которые создал пользователь'
     })

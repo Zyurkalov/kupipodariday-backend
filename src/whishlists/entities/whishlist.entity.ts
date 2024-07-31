@@ -11,21 +11,22 @@ import IWish from "src/constants/interface/wish";
 @Entity()
 export class Whishlist extends IntersectionType(
     BaseEntityForIdAndDate,
-    PickType(Wish, ['image', 'owner'])
-) {
+    PickType(Wish, ['image', 'owner'])) {
+
     @ApiProperty({ example: 'название списка' })
     @IsString()
     @Length(0, maxLength_wishname)
     @Column()
     name: IWish['name'];
-    //-------------------------------------------
+
     // description нет в описании API сервиса, но есть в вводном описании проекта
     @ApiProperty({ description: 'описание подборки', example: 'подарки на мой ДР' })
     @IsOptional()
     @Length(minLength, maxLength_wishList)
     @Column({ default: 'подарки на мой ДР' })
     description: IWish['description'];
-    //-------------------------------------------
+
+    
     @ApiProperty({ description: 'содержит набор ссылок на подарки' })
     items: IWish[];
 }

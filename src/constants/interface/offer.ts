@@ -1,10 +1,8 @@
+import IdAndDate from "./idAndDate";
 import User from "./user";
 import Wish from "./wish";
 
-export default interface Offer {
-    id: number;
-    createdAt: string;
-    updatedAt: string;
+export default interface Offer extends IdAndDate{
     item: Wish;
     amount: number;
     hidden: boolean;

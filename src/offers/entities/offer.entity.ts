@@ -10,19 +10,24 @@ export class Offer extends BaseEntityForIdAndDate {
     @ApiProperty({ description: 'содержит ссылку на товар' })
     @IsNotEmpty()
     item: IOffer['item'];
-    //-------------------------------------------
+
+
     @ApiProperty({ description: 'сумма заявки' })
     @IsNotEmpty()
     @IsNumber({ allowNaN: false, allowInfinity: false })
     @Column()
     amount: IOffer['amount'];
-    //-------------------------------------------
-    @ApiProperty({ description: 'флаг, который определяет показывать ли информацию о скидывающемся в списке' })
+
+
+    @ApiProperty({ 
+        description: 'флаг, который определяет показывать ли информацию о скидывающемся в списке' 
+    })
     @IsNotEmpty()
     @IsBoolean()
     @Column({ default: false })
     hidden: IOffer['hidden'];
-    //-------------------------------------------
+
+
     @ApiProperty({ description: 'содержит индефикатор желающего скинуться' })
     @IsNotEmpty()
     user: IOffer['user'];
