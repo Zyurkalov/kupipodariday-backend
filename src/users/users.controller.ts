@@ -6,7 +6,7 @@ import { UpdateUserDto } from 'src/auth/dto/update-user.dto';
 import { UserProfileResponseDto } from './dto/user-profile-response.dto';
 import { UserPublicProfileResponseDto } from './dto/user-public-profile-response.dto';
 import { UserWishesDto } from './dto/user-wihes.dto';
-import { CurrentUser } from 'src/utility/currentUser';
+import { AuthUser } from 'src/common/decorator/user.decorator';
 import { User } from './entities/user.entity';
 
 @ApiTags('users')
@@ -16,19 +16,19 @@ export class UsersController {
 
   @ApiOkResponse({ type: UserProfileResponseDto })
   @Get('me')
-  async findMe(@CurrentUser() user: User): Promise<UserProfileResponseDto> {
+  async findMe(@AuthUser() user: User): Promise<UserProfileResponseDto> {
     return await this.usersService.getMe(user);
   }
 
   @ApiOkResponse({ type: UserProfileResponseDto })
   @Patch('me')
-  async update(@CurrentUser() user: User, @Body() updateUserDto: UpdateUserDto): Promise<UserProfileResponseDto> {
+  async update(@AuthUser() user: User, @Body() updateUserDto: UpdateUserDto): Promise<UserProfileResponseDto> {
     return this.usersService.update(user, updateUserDto);
   }
 
   @ApiOkResponse({ type: UserWishesDto })
   @Get('me/wishes')
-  async findMyWish(@CurrentUser() user: User): Promise<UserWishesDto[]> {
+  async findMyWish(@AuthUser() user: User): Promise<UserWishesDto[]> {
     return await this.usersService.getMyWish(user);
   }
 
@@ -46,8 +46,8 @@ export class UsersController {
 
   @ApiOkResponse({ type: FindUsersDto })
   @Post('find')
-  findUsers(@Body() body: FindUsersDto) {
-    return this.usersService.findUsers(body.query)
+  async findUsers(@Body() body: FindUsersDto) {
+    return this.usersService.findUser(body.query)
   }
 
   // @Delete(':id')

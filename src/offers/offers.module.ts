@@ -6,6 +6,7 @@ import { Offer } from './entities/offer.entity';
 import { AuthModule } from 'src/auth/auth.module';
 import { UsersModule } from 'src/users/users.module';
 import { WishesModule } from 'src/wishes/wishes.module';
+import { UsersService } from 'src/users/users.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Offer]),
@@ -14,6 +15,7 @@ import { WishesModule } from 'src/wishes/wishes.module';
   forwardRef(()=> WishesModule),
   ],
   controllers: [OffersController],
-  providers: [OffersService]
+  providers: [OffersService],
+  exports: [OffersService],
 })
 export class OffersModule {}

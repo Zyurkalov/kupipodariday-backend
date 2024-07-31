@@ -14,6 +14,7 @@ import { AuthModule } from 'src/auth/auth.module';
   forwardRef(() => AuthModule),
   ],
   controllers: [WishesController],
-  providers: [WishesService]
+  providers: [WishesService],
+  exports: [WishesService],
 })
 export class WishesModule { }

@@ -5,20 +5,23 @@ import { IsDate, IsNumber } from "class-validator";
 
 @Entity()
 export class BaseEntityForIdAndDate extends BaseEntity {
+
     @ApiProperty({
         description: 'уникальный идентификатор'
     })
     @PrimaryGeneratedColumn()
     @IsNumber()
     id: IdAndDate['id'];
-//-------------------------------------------
+
+
     @ApiProperty({
         description: 'дата создания'
     })
     @CreateDateColumn()
     @IsDate()
     createdAt: IdAndDate['date'];
-//-------------------------------------------
+
+    
     @ApiProperty({
         description: 'дата изменения'
     })

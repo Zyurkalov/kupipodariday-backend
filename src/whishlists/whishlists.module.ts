@@ -14,6 +14,7 @@ import { AuthModule } from 'src/auth/auth.module';
   forwardRef(()=> AuthModule),
   ],
   controllers: [WhishlistsController],
-  providers: [WhishlistsService]
+  providers: [WhishlistsService],
+  exports: [WhishlistsService],
 })
 export class WhishlistsModule {}
