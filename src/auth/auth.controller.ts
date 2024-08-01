@@ -1,22 +1,32 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { SigninUserDto } from './dto/signin-user.dto';
+import { UsersService } from 'src/users/users.service';
+import { AuthUser } from 'src/common/decorator/user.decorator';
+import { User } from 'src/users/entities/user.entity';
+import { LocalAuthGuard } from './guards/local-auth.guard';
+import { instanceToPlain } from 'class-transformer';
 
 @ApiTags('auth')
 @Controller()
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UsersService,
+  ) {}
 
+  @UseGuards(LocalAuthGuard)
   @Post('signin')
-  // create(@Body() createAuthDto: CreateUserDto) {
-  //   return this.authService.create(createAuthDto);
-  // }
+  async login(@AuthUser() user: User ,@Body() createAuthDto: CreateUserDto) {
+    return await this.authService.login(user);
+  }
 
   @Post('signup')
-  create(@Body() createAuthDto: CreateUserDto) {
-    return this.authService.create(createAuthDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    const user = await this.userService.signUp(createUserDto)
+    return user
   }
 
 }

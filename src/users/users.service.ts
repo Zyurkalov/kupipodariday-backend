@@ -9,11 +9,16 @@ import { instanceToPlain } from 'class-transformer';
 import { UserWishesDto } from './dto/user-wihes.dto';
 import { FindUsersDto } from './dto/find-user.dto';
 import { Wish } from 'src/wishes/entities/wish.entity';
+import { hashValue } from 'src/helpers/hash';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(User) private readonly usersRepository: Repository<User>) {}
-
+  constructor(
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>,
+    private authService: AuthService,
+  ) { }
 
   async getMe(user: User): Promise<UserProfileResponseDto> {
     return <UserProfileResponseDto>instanceToPlain(user);
@@ -29,7 +34,7 @@ export class UsersService {
   }
 
   async findOneUser(query: FindManyOptions<User>): Promise<User> {
-    return await this.usersRepository.findOne(query);
+    return await this.usersRepository.findOneOrFail(query);
   }
 
   async getAllUsers(): Promise<User[]> {
@@ -37,56 +42,64 @@ export class UsersService {
   }
 
   async findOne(name: string): Promise<UserProfileResponseDto> {
-    return await this.findOneUser({where: {username: name}})
+    return await this.findOneUser({ where: { username: name } })
   }
 
   async findUser(query: FindUsersDto['query']) {
-    return this.findAllUsers({where: [{username: query}, {email: query}]})
+    return this.findAllUsers({ where: [{ username: query }, { email: query }] })
   }
 
-  async getUserWishes (name: string): Promise<UserWishesDto[]> {
-    return this.findOneUser({where: {username: name}})['wishes']
+  async getUserById(userId: number): Promise<User> {
+    return await this.findOneUser({ where: { id: userId } })
+  }
+
+  async getUserWishes(name: string): Promise<UserWishesDto[]> {
+    return this.findOneUser({ where: { username: name } })['wishes']
+  }
+
+  private async handlePasswordUpdate(updateUserDto: UpdateUserDto): Promise<UpdateUserDto> {
+    const { password } = updateUserDto;
+
+    if (password) {
+      updateUserDto.password = await hashValue(password);
+    }
+    return updateUserDto;
   }
 
   async update(user: User, updateUserDto: UpdateUserDto): Promise<UserProfileResponseDto> {
-    if(!user) {
-      throw new Error('пользователь не авторизован')
-    }
-    // if(updateUserDto.password) {
-    //   // updateUserDto.password = await hashValue(updateUserDto.password)
-    // }
-    
-    try {
-      // await this.usersRepository.update({ id: user.id }, { ...updateUserDto });
-      // const updatedUser = await this.findOne(user.username);
-      const savedUser = await this.usersRepository.save(Object.assign(user, updateUserDto));
+    // const user = await this.getUserById(id);
+    const updatedUserDto = await this.handlePasswordUpdate(updateUserDto);
 
-      if (!savedUser) {
-          throw new Error("Пользователь не найден");
-      }
-      return instanceToPlain(savedUser) as UserProfileResponseDto;
-    } catch(err) {
-          throw new Error(`ошибка при обновлении пользователя - ${err.message}`);
-    }
+    return this.usersRepository.save({ ...user, ...updatedUserDto });
   }
 
   async createUser(userData: CreateUserDto): Promise<User> {
     const user = this.findOne(userData.username)
     if (!user) {
-      return await this.usersRepository.save({...userData});
+      return await this.usersRepository.save({ ...userData });
     }
   }
 
-  async removeUser(userId: number): Promise<{username: string, id: number, message: string}> {
-    const {id, username} = await this.findOneUser({where: {id: userId}})
+  async removeUser(userId: number): Promise<{ username: string, id: number, message: string }> {
+    const { id, username } = await this.findOneUser({ where: { id: userId } })
 
-    if(!id || !username) {
+    if (!id || !username) {
       throw new Error("пользователь не найден")
     }
     try {
-      await this.usersRepository.delete({id})
+      await this.usersRepository.delete({ id })
       return { id, username, message: "пользователь удален" }
-    } catch(err) { throw new Error(`непредвиденная ошибка - ${err.message}`) }
+    } catch (err) { throw new Error(`непредвиденная ошибка - ${err.message}`) }
 
   }
+
+  async signUp(createUserDto: CreateUserDto): Promise<User> {
+    const { password } = createUserDto;
+    const user = await this.usersRepository.create({
+      ...createUserDto,
+      password: await hashValue(password)
+    })
+    return this.usersRepository.save(user)
+  }
+
 }

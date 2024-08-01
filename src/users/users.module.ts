@@ -11,10 +11,10 @@ import { Whishlist } from 'src/whishlists/entities/whishlist.entity';
   imports: [TypeOrmModule.forFeature([User]),
   forwardRef(() => WishesModule),
   forwardRef(() => Whishlist),
-  forwardRef(() => AuthModule)
+  forwardRef(() => AuthModule),
   ],
   controllers: [UsersController],
-  providers: [UsersService],
+  providers: [UsersService,],
   exports: [UsersService],
 })
 export class UsersModule { }

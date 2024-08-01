@@ -17,6 +17,7 @@ export default () => ({
     ttl: parseInt(process.env.JWT_TTL) || '30000s',
   },
   hash: {
+    // SALT_ROUNDS не объявлен
     saltRounds: parseInt(process.env.SALT_ROUNDS, 10) || 10,
   },
 });

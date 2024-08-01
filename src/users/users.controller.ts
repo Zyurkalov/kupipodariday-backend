@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseFilters } from '@nestjs/common';
 import { ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { FindUsersDto } from './dto/find-user.dto';
@@ -8,6 +8,8 @@ import { UserPublicProfileResponseDto } from './dto/user-public-profile-response
 import { UserWishesDto } from './dto/user-wihes.dto';
 import { AuthUser } from 'src/common/decorator/user.decorator';
 import { User } from './entities/user.entity';
+import { EntityNotFoundError } from 'typeorm';
+import { EntityNotFoundFilter } from 'src/common/filters/entity-notfound-exception.filter';
 
 @ApiTags('users')
 @Controller('users')
@@ -22,6 +24,7 @@ export class UsersController {
 
   @ApiOkResponse({ type: UserProfileResponseDto })
   @Patch('me')
+  @UseFilters(EntityNotFoundFilter)
   async update(@AuthUser() user: User, @Body() updateUserDto: UpdateUserDto): Promise<UserProfileResponseDto> {
     return this.usersService.update(user, updateUserDto);
   }
