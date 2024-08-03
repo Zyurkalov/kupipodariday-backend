@@ -14,19 +14,21 @@ export class WhishlistsService {
     return await this.wishlistRepository.save(newWishlist)
   }
 
-  findAll() {
-    return `This action returns all whishlists`;
+  async findAll(): Promise<Whishlist[]> {
+    return this.wishlistRepository.find()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} whishlist`;
+  async findOne(id: number) {
+    return this.wishlistRepository.findOneOrFail({where: {id}})
   }
 
-  update(id: number, updateWhishlistDto: UpdateWhishlistDto) {
-    return `This action updates a #${id} whishlist`;
+  async update(id: number, updateWhishlistDto: UpdateWhishlistDto) {
+    const oldWishlist = await this.findOne(id)
+    return await this.wishlistRepository.save({...oldWishlist, ...updateWhishlistDto})
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} whishlist`;
+  async remove(id: number): Promise<Whishlist> {
+    const removingWishlist = await this.findOne(id)
+    return await this.wishlistRepository.remove(removingWishlist)
   }
 }
