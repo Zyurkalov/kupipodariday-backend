@@ -5,7 +5,7 @@ import { EntityNotFoundError} from "typeorm";
 
 
 @Catch(NotFoundException)
-export class NotFoundFilter implements ExceptionFilter { // Исправлено имя класса
+export class NotFoundFilter implements ExceptionFilter { 
     catch(exception: NotFoundException, host: ArgumentsHost): void {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();

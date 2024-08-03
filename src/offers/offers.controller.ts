@@ -14,7 +14,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 export class OffersController {
   constructor(private readonly offersService: OffersService) {}
 
-  @ApiResponse({status: 201, description: 'данные отправлены'})
+  @ApiOkResponse({status: 201, description: 'данные отправлены'})
   @Post()
   create(@AuthUser() user: User, @Body() createOfferDto: CreateOfferDto) {
     return this.offersService.create(user,  createOfferDto);

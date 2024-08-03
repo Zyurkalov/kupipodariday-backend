@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class WishOwnerGuard implements CanActivate {
-    constructor(@InjectRepository(Wish) private readonly wishRepository: Repository<Wish> ) {}
+    // constructor(@InjectRepository(Wish) private readonly wishRepository: Repository<Wish> ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const req = context.switchToHttp().getRequest()

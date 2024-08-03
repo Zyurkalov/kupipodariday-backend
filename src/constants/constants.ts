@@ -24,5 +24,9 @@ export const DEFAULT_ERRORS = {
     notFound: {
         statusCode: 404,
         message: 'Объект не найден',
+    },
+    default: {
+        statusCode: 500,
+        message: 'Ошибка сервера',
     }
 }
