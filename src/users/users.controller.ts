@@ -8,8 +8,6 @@ import { UserPublicProfileResponseDto } from './dto/user-public-profile-response
 import { UserWishesDto } from './dto/user-wihes.dto';
 import { AuthUser } from 'src/common/decorator/user.decorator';
 import { User } from './entities/user.entity';
-import { EntityNotFoundError } from 'typeorm';
-import { EntityNotFoundFilter } from 'src/common/filters/entity-notfound-exception.filter';
 
 @ApiTags('users')
 @Controller('users')
@@ -24,7 +22,6 @@ export class UsersController {
 
   @ApiOkResponse({ type: UserProfileResponseDto })
   @Patch('me')
-  @UseFilters(EntityNotFoundFilter)
   async update(@AuthUser() user: User, @Body() updateUserDto: UpdateUserDto): Promise<UserProfileResponseDto> {
     return this.usersService.update(user, updateUserDto);
   }
@@ -37,7 +34,7 @@ export class UsersController {
 
   @ApiOkResponse({ type: UserPublicProfileResponseDto })
   @Get(':username')
-  async findOne(@Param('username') userName: string): Promise<UserPublicProfileResponseDto> {
+  async findUser(@Param('username') userName: string): Promise<UserPublicProfileResponseDto> {
     return this.usersService.findOne(userName)
   }
 
@@ -49,8 +46,8 @@ export class UsersController {
 
   @ApiOkResponse({ type: FindUsersDto })
   @Post('find')
-  async findUsers(@Body() body: FindUsersDto) {
-    return this.usersService.findUser(body.query)
+  async findUserByBody(@Body() body: FindUsersDto) {
+    return this.usersService.getUserByBody(body.query)
   }
 
   // @Delete(':id')

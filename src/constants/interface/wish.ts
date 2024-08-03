@@ -1,3 +1,4 @@
+import { UserPublicProfileResponseDto } from "src/users/dto/user-public-profile-response.dto";
 import IdAndDate from "./idAndDate";
 import Offer from "./offer";
 import User from "./user";
@@ -10,6 +11,6 @@ export default interface Wish extends IdAndDate{
     raised: number;
     copied: number;
     description: string;
-    owner: User;
+    owner: UserPublicProfileResponseDto;
     offers: Offer
 }

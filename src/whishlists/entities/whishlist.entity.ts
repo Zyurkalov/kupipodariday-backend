@@ -20,10 +20,10 @@ export class Whishlist extends IntersectionType(
     name: IWish['name'];
 
     // description нет в описании API сервиса, но есть в вводном описании проекта
-    @ApiProperty({ description: 'описание подборки', example: 'подарки на мой ДР' })
+    @ApiProperty({ description: 'описание подборки', example: 'что дарить на мой ДР' })
     @IsOptional()
     @Length(minLength, maxLength_wishList)
-    @Column({ default: 'подарки на мой ДР' })
+    @Column({ default: 'что дарить на мой ДР' })
     description: IWish['description'];
 
     
