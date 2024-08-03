@@ -24,7 +24,7 @@ export class WishesService {
     });
   }
 
-  async getOne(id: number) {
+  async getOne(id: number): Promise<Wish> {
     return await this.wishRepository.findOneOrFail({ where: { id } })
   }
 

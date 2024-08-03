@@ -1,6 +1,6 @@
 import IdAndDate from "./idAndDate";
-import User from "./user";
-import Wish from "./wish";
+import { User } from "src/users/entities/user.entity";
+import { Wish } from "src/wishes/entities/wish.entity";
 
 export default interface Offer extends IdAndDate{
     item: Wish;

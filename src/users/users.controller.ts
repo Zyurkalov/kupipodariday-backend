@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseFilters } from '@nestjs/common';
-import { ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { FindUsersDto } from './dto/find-user.dto';
 import { UpdateUserDto } from 'src/auth/dto/update-user.dto';
@@ -8,8 +8,11 @@ import { UserPublicProfileResponseDto } from './dto/user-public-profile-response
 import { UserWishesDto } from './dto/user-wihes.dto';
 import { AuthUser } from 'src/common/decorator/user.decorator';
 import { User } from './entities/user.entity';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @ApiTags('users')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
@@ -49,7 +52,7 @@ export class UsersController {
   async findUserByBody(@Body() body: FindUsersDto) {
     return this.usersService.getUserByBody(body.query)
   }
-
+  
   // @Delete(':id')
   // remove(@Param('id') id: string) {
   //   return this.usersService.remove(+id);
