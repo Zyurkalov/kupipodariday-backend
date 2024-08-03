@@ -4,8 +4,7 @@ import { EntityNotFoundError} from "typeorm";
 
 import { DEFAULT_ERRORS } from "src/constants/constants";
 
-
-@Catch(NotFoundException)
+@Catch()
 export class AllExceptionFilter implements ExceptionFilter { 
     catch(exception: unknown, host: ArgumentsHost): void {
         const ctx = host.switchToHttp();
