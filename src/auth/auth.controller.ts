@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -7,7 +7,6 @@ import { UsersService } from 'src/users/users.service';
 import { AuthUser } from 'src/common/decorator/user.decorator';
 import { User } from 'src/users/entities/user.entity';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { instanceToPlain } from 'class-transformer';
 
 @ApiTags('auth')
 @Controller()
