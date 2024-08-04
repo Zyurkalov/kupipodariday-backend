@@ -28,5 +28,9 @@ export const DEFAULT_ERRORS = {
     default: {
         statusCode: 500,
         message: 'Ошибка сервера',
+    },
+    conflict: {
+         statusCode: 409, 
+         message: 'Конфликт обращения к ДБ' 
     }
 }

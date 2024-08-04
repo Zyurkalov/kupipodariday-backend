@@ -7,6 +7,7 @@ import { UsersService } from 'src/users/users.service';
 import { AuthUser } from 'src/common/decorator/user.decorator';
 import { User } from 'src/users/entities/user.entity';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { UserAlreadyExist } from './guards/user-already-exist.guard';
 
 @ApiTags('auth')
 @Controller()
@@ -18,10 +19,10 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('signin')
-  async login(@AuthUser() user: User ,@Body() createAuthDto: CreateUserDto) {
+  async login(@AuthUser() user: User, @Body() createAuthDto: CreateUserDto) {
     return await this.authService.login(user);
   }
-
+  @UseGuards(UserAlreadyExist)
   @Post('signup')
   async create(@Body() createUserDto: CreateUserDto) {
     const user = await this.userService.signUp(createUserDto)

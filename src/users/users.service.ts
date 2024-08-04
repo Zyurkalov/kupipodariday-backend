@@ -45,10 +45,6 @@ export class UsersService {
     return await this.getUserByQuery({ where: { username: name } })
   }
 
-  async getUserByBody(query: FindUsersDto['query']) {
-    return this.getUserByQuery({ where: [{ username: query }, { email: query }] })
-  }
-
   async getUserById(userId: number): Promise<User> {
     return await this.getUserByQuery({ where: { id: userId } })
   }
@@ -56,7 +52,11 @@ export class UsersService {
   async getUserWishes(name: string): Promise<UserWishesDto[]> {
     return this.getUserByQuery({ where: { username: name } })['wishes']
   }
-  
+
+  // для поиска внутри гардов
+  async findUserByBody(name: string, mail: string) {
+    return this.usersRepository.findOne({ where: [{ username: name }, { email: mail}] })
+  }
 
   private async handlePasswordUpdate(updateUserDto: UpdateUserDto): Promise<UpdateUserDto> {
     const { password } = updateUserDto;
