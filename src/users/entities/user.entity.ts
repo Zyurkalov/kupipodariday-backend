@@ -1,11 +1,13 @@
-import { IsEmail, IsNotEmpty, IsString, IsUrl, Length } from 'class-validator';
+import { IsArray, IsEmail, IsNotEmpty, IsString, IsUrl, Length } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 
 import { BaseEntityForIdAndDate } from 'src/constants/entity/base.entity';
 import { DEFAULT_VALUES, maxLength_username, maxLength_about, minLength } from 'src/constants/constants';
-import IUser from "src/constants/interface/user";
 import { Exclude } from 'class-transformer';
+import { Wish } from 'src/wishes/entities/wish.entity';
+import { Wishlist } from 'src/wishlists/entities/wishlist.entity';
+import { Offer } from 'src/offers/entities/offer.entity';
 
 @Entity()
 export class User extends BaseEntityForIdAndDate {
@@ -15,7 +17,7 @@ export class User extends BaseEntityForIdAndDate {
     @IsString()
     @Length(minLength, maxLength_username)
     @Column({ unique: true })
-    username: IUser['about'];
+    username: string;
 
 
     @ApiProperty({
@@ -28,7 +30,7 @@ export class User extends BaseEntityForIdAndDate {
     @IsNotEmpty()
     @IsString()
     @Length(minLength, maxLength_about)
-    about: IUser['about'];
+    about: string;
 
 
     @ApiProperty({
@@ -40,7 +42,7 @@ export class User extends BaseEntityForIdAndDate {
     })
     @IsNotEmpty()
     @IsUrl()
-    avatar: IUser['avatar'];
+    avatar: string;
 
 
     @ApiProperty({
@@ -50,7 +52,7 @@ export class User extends BaseEntityForIdAndDate {
     @IsNotEmpty()
     @IsEmail()
     @Column({ unique: true })
-    email: IUser['email'];
+    email: string;
 
 
     @ApiProperty({
@@ -58,25 +60,32 @@ export class User extends BaseEntityForIdAndDate {
         example: 'password123'
     })
     @IsNotEmpty()
+    @IsString()
     @Exclude()
     @Column({ select: false })
-    password: IUser['password'];
+    password: string;
 
 
     @ApiProperty({
         description: 'список желаемых подарков'
     })
-    wishes: IUser['wishes'][];
+    @IsArray()
+    @OneToMany(() => Wish, (wishes) => wishes.owner)
+    wishes: Wish[];
 
 
     @ApiProperty({
         description: 'список подарков, на которые скидывается пользователь'
     })
-    offers: IUser['offers'][];
+    @IsArray()
+    @OneToMany(() => Offer, (offers) => offers.user)
+    offers: Offer[];
 
 
     @ApiProperty({
         description: 'список вишлистов, которые создал пользователь'
     })
-    wishlists: IUser['wishlist'][];
+    @IsArray()
+    @OneToMany(() => Wishlist, (wishlists) => wishlists.owner)
+    wishlists: Wishlist[];
 }

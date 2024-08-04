@@ -1,8 +1,8 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { Whishlist } from '../entities/whishlist.entity';
+import { Wishlist } from '../entities/wishlist.entity';
 import IWish from 'src/constants/interface/wish';
 
-export class CreateWhishlistDto extends PickType(Whishlist, ['name', 'image'] as const) {
+export class CreateWhishlistDto extends PickType(Wishlist, ['name', 'image'] as const) {
     @ApiProperty({example: 'List [ 1 ]'})
     itemsId: IWish['id'][]
 

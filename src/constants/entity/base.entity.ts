@@ -1,4 +1,4 @@
-import { BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Entity } from "typeorm";
+import { BaseEntity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Entity, Column } from "typeorm";
 import { ApiProperty } from "@nestjs/swagger";
 import IdAndDate from "../interface/idAndDate";
 import { IsDate, IsNumber } from "class-validator";

@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { UsersModule } from './users/users.module';
 import { WishesModule } from './wishes/wishes.module';
 import { OffersModule } from './offers/offers.module';
-import { WhishlistsModule } from './whishlists/whishlists.module';
+import { WhishlistsModule } from './wishlists/wishlists.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService} from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';

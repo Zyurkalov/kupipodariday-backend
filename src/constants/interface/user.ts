@@ -1,5 +1,5 @@
 import { Wish } from "src/wishes/entities/wish.entity";
-import { Whishlist } from "src/whishlists/entities/whishlist.entity";
+import { Wishlist } from "src/wishlists/entities/wishlist.entity";
 import IdAndDate from "./idAndDate";
 
 export default interface User extends IdAndDate{
@@ -10,5 +10,5 @@ export default interface User extends IdAndDate{
     password: string;
     wishes: Wish;
     offers: Wish;
-    wishlist: Whishlist;
+    wishlist: Wishlist;
 }

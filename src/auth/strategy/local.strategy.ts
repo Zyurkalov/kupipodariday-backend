@@ -1,4 +1,4 @@
-import { ExtractJwt, Strategy } from "passport-jwt";
+import { Strategy } from "passport-local";
 import { PassportStrategy } from "@nestjs/passport";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { AuthService } from "../auth.service";
@@ -12,12 +12,12 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
         super()
     }
     validate(username: User['username'], password: User['password'] ): Promise<any> {
-        const user = this.authService.validatePassword(username, password)
-        if(!user) {
+        const accessToken = this.authService.validatePassword(username, password)
+        if(!accessToken) {
             throw new UnauthorizedException(
                 'неправильное имя пользователя или пароль'
             )
         }
-        return user
+        return accessToken
     }
 }

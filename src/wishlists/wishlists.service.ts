@@ -1,20 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { CreateWhishlistDto } from './dto/create-whishlist.dto';
-import { UpdateWhishlistDto } from './dto/update-whishlist.dto';
+import { CreateWhishlistDto } from './dto/create-wishlist.dto';
+import { UpdateWhishlistDto } from './dto/update-wishlist.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Whishlist } from './entities/whishlist.entity';
+import { Wishlist } from './entities/wishlist.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class WhishlistsService {
-  constructor(@InjectRepository(Whishlist) private readonly wishlistRepository: Repository<Whishlist> ) {}
+  constructor(@InjectRepository(Wishlist) private readonly wishlistRepository: Repository<Wishlist> ) {}
 
   async create(createWhishlistDto: CreateWhishlistDto) {
     const newWishlist =  await this.wishlistRepository.create(createWhishlistDto)
     return await this.wishlistRepository.save(newWishlist)
   }
 
-  async findAll(): Promise<Whishlist[]> {
+  async findAll(): Promise<Wishlist[]> {
     return this.wishlistRepository.find()
   }
 
@@ -27,7 +27,7 @@ export class WhishlistsService {
     return await this.wishlistRepository.save({...oldWishlist, ...updateWhishlistDto})
   }
 
-  async remove(id: number): Promise<Whishlist> {
+  async remove(id: number): Promise<Wishlist> {
     const removingWishlist = await this.findOne(id)
     return await this.wishlistRepository.remove(removingWishlist)
   }

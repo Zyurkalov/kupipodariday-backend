@@ -3,7 +3,6 @@ import { User } from 'src/users/entities/user.entity';
 import IUser from 'src/constants/interface/user';
 import { hashValue, verifyHash } from 'src/helpers/hash';
 import { UsersService } from 'src/users/users.service';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -12,7 +11,6 @@ constructor(
   @Inject(forwardRef(() => UsersService))
   private readonly userService: UsersService,
   private readonly jwtService: JwtService,
-  private readonly configService: ConfigService,
 ) {}
 
   async login(user: User) {

@@ -22,6 +22,7 @@ export class AuthController {
   async login(@AuthUser() user: User, @Body() createAuthDto: CreateUserDto) {
     return await this.authService.login(user);
   }
+  
   @UseGuards(UserAlreadyExist)
   @Post('signup')
   async create(@Body() createUserDto: CreateUserDto) {

@@ -9,30 +9,30 @@ import { User } from "src/users/entities/user.entity";
 @Entity()
 export class Offer extends BaseEntityForIdAndDate {
 
-    @ApiProperty({ description: 'содержит ссылку на товар' })
+    @ApiProperty({ description: 'Подарок' })
     @IsNotEmpty()
     @ManyToOne(() => Wish, (wish) => wish.offers)
     item: Wish;
 
 
-    @ApiProperty({ description: 'сумма заявки' })
+    @ApiProperty({ description: 'Сумма заявки' })
     @IsNotEmpty()
     @IsNumber({ allowNaN: false, allowInfinity: false })
     @Column()
-    amount: IOffer['amount'];
+    amount: number;
 
 
     @ApiProperty({ 
-        description: 'флаг, который определяет показывать ли информацию о скидывающихся в списке' 
+        description: 'Флаг, который определяет показывать ли информацию о скидывающихся в списке' 
     })
     @IsNotEmpty()
     @IsBoolean()
     @Column({ default: false })
-    hidden: IOffer['hidden'];
+    hidden: boolean;
 
 
-    @ApiProperty({ description: 'содержит индефикатор желающего скинуться' })
+    @ApiProperty({ description: 'Желающий скинуться' })
     @IsNotEmpty()
     @ManyToOne(() => User, (user) => user.offers)
-    user: IOffer['user'];
+    user: User;
 }

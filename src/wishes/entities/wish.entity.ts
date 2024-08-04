@@ -1,9 +1,14 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsArray, IsNotEmpty, IsNumber, IsObject, IsString, IsUrl, Length, Min } from "class-validator";
+import { Type } from "class-transformer";
+import { IsArray, IsNotEmpty, IsNumber, IsObject, IsString, IsUrl, Length, Min, ValidateNested } from "class-validator";
 import { maxLength_wishname, maxLength_description, minLength, DEFAULT_VALUES } from "src/constants/constants";
 import { BaseEntityForIdAndDate } from "src/constants/entity/base.entity";
 import IWish from "src/constants/interface/wish";
-import { Column, Entity } from "typeorm";
+import { Offer } from "src/offers/entities/offer.entity";
+import { UserPublicProfileResponseDto } from "src/users/dto/user-public-profile-response.dto";
+import { User } from "src/users/entities/user.entity";
+import { Wishlist } from "src/wishlists/entities/wishlist.entity";
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from "typeorm";
 
 @Entity()
 export class Wish extends BaseEntityForIdAndDate {
@@ -12,7 +17,7 @@ export class Wish extends BaseEntityForIdAndDate {
     @IsString()
     @Length(minLength, maxLength_wishname)
     @Column()
-    name: IWish['name'];
+    name: string;
 
 
     @ApiProperty({
@@ -21,7 +26,7 @@ export class Wish extends BaseEntityForIdAndDate {
     @IsUrl()
     @IsNotEmpty()
     @Column()
-    link: IWish['link'];
+    link: string;
 
 
     @ApiProperty({
@@ -31,7 +36,7 @@ export class Wish extends BaseEntityForIdAndDate {
     @IsUrl()
     @IsNotEmpty()
     @Column({ default: DEFAULT_VALUES.image })
-    image: IWish['image'];
+    image: string;
 
 
     @ApiProperty({
@@ -42,7 +47,7 @@ export class Wish extends BaseEntityForIdAndDate {
     @Min(minLength)
     @IsNotEmpty()
     @Column()
-    price: IWish['price'];
+    price: number;
 
 
     @ApiProperty({ 
@@ -52,7 +57,7 @@ export class Wish extends BaseEntityForIdAndDate {
     @IsNumber({ allowNaN: false, allowInfinity: false })
     @Min(minLength)
     @Column()
-    raised: IWish['raised'];
+    raised: number;
 
 
     @ApiProperty({ 
@@ -61,27 +66,37 @@ export class Wish extends BaseEntityForIdAndDate {
     })
     @IsNumber({ allowNaN: false, allowInfinity: false })
     @Column({ default: 0 })
-    copied: IWish['copied'];
+    copied: number;
 
 
     @ApiProperty({ description: 'описание подарка' })
     @IsNotEmpty()
     @Length(minLength, maxLength_description)
     @Column()
-    description: IWish['description'];
+    description: string;
 
 
     @ApiProperty({ 
         description: 'пользователь который добавил пожелание подарка', 
         example: 'Антон' 
     })
-    @IsObject()
-    owner: IWish['owner'];
+    // @IsObject()
+    @Column()
+    @ValidateNested()
+    @Type(() => User)
+    @ManyToOne(() => User, (owner) => owner.wishes)
+    owner: User;
 
 
     @ApiProperty({ 
         description: 'массив ссылок на заявки скинуться от других пользователей' 
     })
     @IsArray()
-    offers: IWish['offers'][];
+    @OneToMany(() => Offer, (offer) => offer.item)
+    offers: Offer[];
+
+    // @ApiProperty()
+    // @IsArray()
+    // @ManyToMany(() => Wishlist)
+    // Wishlists: Wishlist[];
 }
