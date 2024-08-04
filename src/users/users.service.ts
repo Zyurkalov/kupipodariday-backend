@@ -50,12 +50,16 @@ export class UsersService {
   }
 
   async getUserWishes(name: string): Promise<UserWishesDto[]> {
-    return this.getUserByQuery({ where: { username: name } })['wishes']
+    return await this.getUserByQuery({ where: { username: name } })['wishes']
   }
 
-  // для поиска внутри гардов
+  async getUserByBody(query: string) {
+    return await this.usersRepository.findOneOrFail({ where: [{ username: query }, { email: query}] })
+  }
+
+  // для поиска внутри гардов, вызывать ошибку "OrFail" не нужно
   async findUserByBody(name: string, mail: string) {
-    return this.usersRepository.findOne({ where: [{ username: name }, { email: mail}] })
+    return await this.usersRepository.findOne({ where: [{ username: name }, { email: mail}] })
   }
 
   private async handlePasswordUpdate(updateUserDto: UpdateUserDto): Promise<UpdateUserDto> {
@@ -75,7 +79,7 @@ export class UsersService {
   }
 
   async createUser(userData: CreateUserDto): Promise<User> {
-    const user = this.findOne(userData.username)
+    const user = await this.findOne(userData.username)
     if (!user) {
       return await this.usersRepository.save({ ...userData });
     }
@@ -90,8 +94,9 @@ export class UsersService {
     try {
       await this.usersRepository.delete({ id })
       return { id, username, message: "пользователь удален" }
-    } catch (err) { throw new Error(`непредвиденная ошибка - ${err.message}`) }
-
+    } catch (err) { 
+      throw new Error(`непредвиденная ошибка - ${err.message}`) 
+    }
   }
 
   async signUp(createUserDto: CreateUserDto): Promise<User> {
@@ -100,7 +105,7 @@ export class UsersService {
       ...createUserDto,
       password: await hashValue(password)
     })
-    return this.usersRepository.save(user)
+    return await this.usersRepository.save(user)
   }
 
 }

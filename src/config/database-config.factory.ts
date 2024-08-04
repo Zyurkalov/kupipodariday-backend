@@ -5,7 +5,8 @@ import { join } from 'path';
 
 @Injectable()
 export class DatabaseConfigFactory implements TypeOrmOptionsFactory {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) {
+  }
   createTypeOrmOptions(): TypeOrmModuleOptions {
     return {
       type: 'postgres',
@@ -15,8 +16,8 @@ export class DatabaseConfigFactory implements TypeOrmOptionsFactory {
       password: this.configService.get<string>('database.password'),
       database: this.configService.get<string>('database.databaseName'),
       entities: [join(__dirname, '../**/*.entity{.ts,.js}')],
-      synchronize: true,
-      logging: true,
+      synchronize: this.configService.get<boolean>('database.synchronize'),
+      logging: this.configService.get<boolean>('database.logging'),
     };
   }
 }

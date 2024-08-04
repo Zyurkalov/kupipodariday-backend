@@ -12,7 +12,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
         super()
     }
     validate(username: User['username'], password: User['password'] ): Promise<any> {
-        const user = this.authService.validateUser(username, password)
+        const user = this.authService.validatePassword(username, password)
         if(!user) {
             throw new UnauthorizedException(
                 'неправильное имя пользователя или пароль'
