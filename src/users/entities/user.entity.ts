@@ -2,7 +2,7 @@ import { IsArray, IsEmail, IsNotEmpty, IsString, IsUrl, Length } from 'class-val
 import { ApiProperty } from '@nestjs/swagger';
 import { Entity, Column, OneToMany } from 'typeorm';
 
-import { BaseEntityForIdAndDate } from 'src/constants/entity/base.entity';
+import { BaseEntityForIdAndDate } from 'src/constants/entity/base-entity';
 import { DEFAULT_VALUES, maxLength_username, maxLength_about, minLength } from 'src/constants/constants';
 import { Exclude } from 'class-transformer';
 import { Wish } from 'src/wishes/entities/wish.entity';
@@ -12,7 +12,10 @@ import { Offer } from 'src/offers/entities/offer.entity';
 @Entity()
 export class User extends BaseEntityForIdAndDate {
 
-    @ApiProperty({ description: "имя пользователя", example: DEFAULT_VALUES.user, })
+    @ApiProperty({ 
+        description: "имя пользователя", 
+        example: DEFAULT_VALUES.user, 
+    })
     @IsNotEmpty()
     @IsString()
     @Length(minLength, maxLength_username)
@@ -67,7 +70,9 @@ export class User extends BaseEntityForIdAndDate {
 
 
     @ApiProperty({
-        description: 'список желаемых подарков'
+        type: () => Wish,
+        description: 'список желаемых подарков',
+        isArray: true,
     })
     @IsArray()
     @OneToMany(() => Wish, (wishes) => wishes.owner)
@@ -75,7 +80,9 @@ export class User extends BaseEntityForIdAndDate {
 
 
     @ApiProperty({
-        description: 'список подарков, на которые скидывается пользователь'
+        type: () => Offer,
+        description: 'список дарителей',
+        isArray: true,
     })
     @IsArray()
     @OneToMany(() => Offer, (offers) => offers.user)
@@ -83,7 +90,9 @@ export class User extends BaseEntityForIdAndDate {
 
 
     @ApiProperty({
-        description: 'список вишлистов, которые создал пользователь'
+        type: () => Wishlist,
+        description: 'список вишлистов, которые создал пользователь',
+        isArray: true,
     })
     @IsArray()
     @OneToMany(() => Wishlist, (wishlists) => wishlists.owner)

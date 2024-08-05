@@ -1,7 +1,8 @@
 import { PickType, IntersectionType, PartialType } from '@nestjs/swagger';
+import { BaseEntityForIdAndDate } from 'src/constants/entity/base-entity';
 import { User } from 'src/users/entities/user.entity';
 
 export class CreateUserDto extends IntersectionType( 
   PickType(User, ['username', 'email', 'password'] as const),
-  PartialType(PickType(User, ['about', 'avatar'] as const)) 
+  PartialType(PickType(User, ['about', 'avatar'] as const)),
   ) {}

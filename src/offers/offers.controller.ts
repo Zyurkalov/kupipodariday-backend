@@ -1,11 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OffersService } from './offers.service';
 import { CreateOfferDto } from './dto/create-offer.dto';
-import { UpdateOfferDto } from './dto/update-offer.dto';
 import { AuthUser } from 'src/common/decorator/user.decorator';
 import { User } from 'src/users/entities/user.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { Offer } from './entities/offer.entity';
 
 @ApiTags('offers')
 @ApiBearerAuth()
@@ -14,21 +14,29 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 export class OffersController {
   constructor(private readonly offersService: OffersService) {}
 
-  @ApiOkResponse({status: 201, description: 'данные отправлены'})
+  @ApiResponse({
+    status: 201, 
+    type: Object
+  })
   @Post()
   create(@AuthUser() user: User, @Body() createOfferDto: CreateOfferDto) {
     return this.offersService.create(user,  createOfferDto);
   }
 
-  @ApiOkResponse()
+  @ApiOkResponse({
+    type: Offer,
+    isArray: true,
+  })
   @Get()
-  findAll() {
+  findAll(): Promise<Offer[]> {
     return this.offersService.findAll();
   }
 
-  @ApiOkResponse()
+  @ApiOkResponse({
+    type: Offer
+  })
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string): Promise<Offer> {
     return this.offersService.findOne(+id);
   }
 

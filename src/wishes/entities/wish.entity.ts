@@ -1,11 +1,10 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, OmitType } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsArray, IsNotEmpty, IsNumber, IsObject, IsString, IsUrl, Length, Min, ValidateNested } from "class-validator";
 import { maxLength_wishname, maxLength_description, minLength, DEFAULT_VALUES } from "src/constants/constants";
-import { BaseEntityForIdAndDate } from "src/constants/entity/base.entity";
-import IWish from "src/constants/interface/wish";
+import { BaseEntityForIdAndDate } from "src/constants/entity/base-entity";
+// import IWish from "src/constants/interface/wish";
 import { Offer } from "src/offers/entities/offer.entity";
-import { UserPublicProfileResponseDto } from "src/users/dto/user-public-profile-response.dto";
 import { User } from "src/users/entities/user.entity";
 import { Wishlist } from "src/wishlists/entities/wishlist.entity";
 import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from "typeorm";
@@ -77,26 +76,20 @@ export class Wish extends BaseEntityForIdAndDate {
 
 
     @ApiProperty({ 
+        type: () => OmitType(User, ['password','wishes','wishlists','offers','email'] as const),
         description: 'пользователь который добавил пожелание подарка', 
         example: 'Антон' 
     })
-    // @IsObject()
-    @Column()
-    @ValidateNested()
-    @Type(() => User)
     @ManyToOne(() => User, (owner) => owner.wishes)
     owner: User;
 
 
     @ApiProperty({ 
-        description: 'массив ссылок на заявки скинуться от других пользователей' 
+        type: () => Offer,
+        description: 'список дарителей' ,
+        isArray: true,
     })
     @IsArray()
     @OneToMany(() => Offer, (offer) => offer.item)
     offers: Offer[];
-
-    // @ApiProperty()
-    // @IsArray()
-    // @ManyToMany(() => Wishlist)
-    // Wishlists: Wishlist[];
 }

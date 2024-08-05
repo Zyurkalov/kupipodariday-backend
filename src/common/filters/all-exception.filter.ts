@@ -19,8 +19,8 @@ export class AllExceptionFilter implements ExceptionFilter {
             message = DEFAULT_ERRORS.notFound.message
         } 
         if (exception instanceof ConflictException) {
-            status = DEFAULT_ERRORS.conflict.statusCode;
-            message = exception.message || DEFAULT_ERRORS.conflict.message;  
+            status = DEFAULT_ERRORS.userAlreadyExists.statusCode;
+            message = exception.message || DEFAULT_ERRORS.userAlreadyExists.message;  
         } 
         if (exception instanceof HttpException) {
             const responseBody = exception.getResponse() as { message?: string };

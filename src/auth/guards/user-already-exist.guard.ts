@@ -1,6 +1,5 @@
 import {
-    CanActivate, ConflictException, ExecutionContext,
-    Injectable, Logger
+    CanActivate, ConflictException, ExecutionContext, Injectable, Logger
 } from "@nestjs/common";
 import { UsersService } from "src/users/users.service";
 import { Request } from 'express';

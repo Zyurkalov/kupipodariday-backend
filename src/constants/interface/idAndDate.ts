@@ -1,4 +1,4 @@
-export default interface IdAndDate {
+interface IdAndDate {
     id: number;
     createdAt: Date;
     updatedAt: Date;

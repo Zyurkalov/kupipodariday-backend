@@ -9,8 +9,9 @@ import { instanceToPlain } from 'class-transformer';
 import { UserWishesDto } from './dto/user-wihes.dto';
 import { FindUsersDto } from './dto/find-user.dto';
 import { Wish } from 'src/wishes/entities/wish.entity';
-import { hashValue } from 'src/helpers/hash';
+import { hashValue } from 'src/common/helpers/hash';
 import { AuthService } from 'src/auth/auth.service';
+import { SignupUserResponseDto } from 'src/auth/dto/signup-user-response.dto';
 
 @Injectable()
 export class UsersService {
@@ -99,13 +100,14 @@ export class UsersService {
     }
   }
 
-  async signUp(createUserDto: CreateUserDto): Promise<User> {
+  async signUp(createUserDto: CreateUserDto): Promise<SignupUserResponseDto> {
     const { password } = createUserDto;
     const user = await this.usersRepository.create({
       ...createUserDto,
       password: await hashValue(password)
     })
-    return await this.usersRepository.save(user)
+    await this.usersRepository.save(user)
+    return <SignupUserResponseDto>instanceToPlain(user);
   }
 
 }

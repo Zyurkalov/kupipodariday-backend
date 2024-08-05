@@ -1,7 +1,6 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { User } from 'src/users/entities/user.entity';
-import IUser from 'src/constants/interface/user';
-import { hashValue, verifyHash } from 'src/helpers/hash';
+import { verifyHash } from 'src/common/helpers/hash';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 
@@ -21,7 +20,7 @@ constructor(
     }
   }
 
-  async validatePassword(username: IUser['username'], password: IUser['password']): Promise<any> {
+  async validatePassword(username: string, password: string): Promise<any> {
     const user = await this.userService.getUserByQuery({
       select: {username: true, password: true, id: true},
       where: {username}

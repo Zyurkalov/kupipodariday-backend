@@ -9,6 +9,7 @@ import { ConfigModule, ConfigService} from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseConfigFactory } from './config/database-config.factory';
 import configuration from './config/configuration';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import configuration from './config/configuration';
     TypeOrmModule.forRootAsync({
       useClass: DatabaseConfigFactory
     }),
+
     AuthModule,
     UsersModule,
     OffersModule,

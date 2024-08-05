@@ -7,13 +7,13 @@ export const DEFAULT_VALUES = {
     password: "somestrongpassword",
     user: "user",
 }
-export const minLength_password = 2 
-export const minLength = 1 
-export const maxLength_username = 64 
-export const maxLength_about = 200  
-export const maxLength_wishname = 250  
-export const maxLength_description = 1024 
-export const maxLength_wishList = 1500 
+export const minLength_password = 2
+export const minLength = 1
+export const maxLength_username = 64
+export const maxLength_about = 200
+export const maxLength_wishname = 250
+export const maxLength_description = 1024
+export const maxLength_wishList = 1500
 
 // export const EMAIL_REGEXP = /([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/;
 // export const URL_REGEXP = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
@@ -29,8 +29,16 @@ export const DEFAULT_ERRORS = {
         statusCode: 500,
         message: 'Ошибка сервера',
     },
-    conflict: {
-         statusCode: 409, 
-         message: 'Конфликт обращения к ДБ' 
+    userAlreadyExists: {
+        statusCode: 409,
+        message: 'Пользователь с таким email или username уже зарегистрирован'
+    },
+    invalidCredentials: {
+        statusCode: 401,
+        message: 'Некорректная пара логин и пароль'
+    },
+    validationError: {
+        statusCode: 400,
+        message: 'Ошибка валидации переданных значений'
     }
 }

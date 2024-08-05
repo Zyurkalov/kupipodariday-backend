@@ -1,18 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { BaseEntityForIdAndDate } from "src/constants/entity/base.entity";
+import { BaseEntityForIdAndDate } from "src/constants/entity/base-entity";
 import { Column, Entity, ManyToOne } from "typeorm";
-import IOffer from "src/constants/interface/offer";
 import { IsBoolean, IsNotEmpty, IsNumber } from "class-validator";
 import { Wish } from "src/wishes/entities/wish.entity";
 import { User } from "src/users/entities/user.entity";
 
 @Entity()
 export class Offer extends BaseEntityForIdAndDate {
-
-    @ApiProperty({ description: 'Подарок' })
-    @IsNotEmpty()
-    @ManyToOne(() => Wish, (wish) => wish.offers)
-    item: Wish;
 
 
     @ApiProperty({ description: 'Сумма заявки' })
@@ -22,17 +16,27 @@ export class Offer extends BaseEntityForIdAndDate {
     amount: number;
 
 
-    @ApiProperty({ 
-        description: 'Флаг, который определяет показывать ли информацию о скидывающихся в списке' 
+    @ApiProperty({
+        description: 'Флаг, который определяет показывать ли информацию о дарителях'
     })
     @IsNotEmpty()
     @IsBoolean()
     @Column({ default: false })
     hidden: boolean;
 
-
-    @ApiProperty({ description: 'Желающий скинуться' })
-    @IsNotEmpty()
+    @ApiProperty({
+        type: () => User,
+        description: 'Пользователь', 
+    })
     @ManyToOne(() => User, (user) => user.offers)
     user: User;
+
+
+    @ApiProperty({
+        type: () => Wish,
+        description: 'Подарок'
+    })
+    @IsNotEmpty()
+    @ManyToOne(() => Wish, (item) => item.id)
+    item: Wish;
 }
