@@ -8,6 +8,7 @@ import { LocalStrategy } from './strategy/local.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { JwtConfigFactory } from 'src/config/jwt-config.factory';
 import { ConfigModule } from '@nestjs/config';
+import { UserAlreadyExist } from './guards/user-already-exist.guard';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { ConfigModule } from '@nestjs/config';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, JwtConfigFactory],
+  providers: [AuthService, LocalStrategy, JwtStrategy, JwtConfigFactory, UserAlreadyExist],
   exports: [AuthService]
 })
 export class AuthModule {}

@@ -14,7 +14,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
         const accessToken = this.authService.validatePassword(username, password)
         if(!accessToken) {
             throw new UnauthorizedException(
-                'неправильное имя пользователя или пароль'
+                'Неправильное имя пользователя или пароль'
             )
         }
         return accessToken

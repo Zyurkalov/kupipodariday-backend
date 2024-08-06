@@ -59,12 +59,12 @@ export class User extends BaseEntityForIdAndDate {
 
 
     @ApiProperty({
-        description: 'пaроль пользователя',
-        example: 'password123'
+        description: "пaроль пользователя",
+        example: "password"
     })
     @IsNotEmpty()
     @IsString()
-    @Exclude()
+    // @Exclude()
     @Column({ select: false })
     password: string;
 

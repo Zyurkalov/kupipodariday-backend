@@ -12,6 +12,7 @@ import { Wish } from 'src/wishes/entities/wish.entity';
 import { hashValue } from 'src/common/helpers/hash';
 import { AuthService } from 'src/auth/auth.service';
 import { SignupUserResponseDto } from 'src/auth/dto/signup-user-response.dto';
+import { WishesService } from 'src/wishes/wishes.service';
 
 @Injectable()
 export class UsersService {
@@ -19,22 +20,26 @@ export class UsersService {
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
     private authService: AuthService,
+    private wishSevice: WishesService,
   ) { }
 
   async getAllUsers(): Promise<User[]> {
     return await this.usersRepository.find()
   }
 
-  async getMe(user: User): Promise<UserProfileResponseDto> {
-    return <UserProfileResponseDto>instanceToPlain(user);
+  getMe(user: User): UserProfileResponseDto {
+    const currentUser = <UserProfileResponseDto>instanceToPlain(user);
+    return currentUser;
     // instanceToPlain(user) - преобразует user, в нашем случае экземпляр User - в объект
     // <UserProfileResponseDto> указывает, какие типы должны быть извлечены из instanceToPlain(user)
   }
   async getMyWish(user: User): Promise<Wish[]> {
-    return user.wishes;
+    // console.log(await this.findAllByQuery({ where: { username: user.username } }))
+    // return await this.findAllByQuery({ where: { username: user.username } })['wishes']
+    return await this.wishSevice.getUserWish(user.username)
   }
 
-  async getAllUserByQuery(query: FindManyOptions<User>): Promise<User[]> {
+  async findAllByQuery(query: FindManyOptions<User>): Promise<User[]> {
     return await this.usersRepository.find(query);
   }
 
@@ -46,12 +51,16 @@ export class UsersService {
     return await this.getUserByQuery({ where: { username: name } })
   }
 
+  async findOneByQuery(name: string): Promise<User> {
+    return await this.usersRepository.findOne({ where: { username: name } })
+  }
+
   async getUserById(userId: number): Promise<User> {
     return await this.getUserByQuery({ where: { id: userId } })
   }
 
-  async getUserWishes(name: string): Promise<UserWishesDto[]> {
-    return await this.getUserByQuery({ where: { username: name } })['wishes']
+  async findUserWishes(name: string): Promise<UserWishesDto[]> {
+    return await this.findAllByQuery({ where: { username: name } })['wishes']
   }
 
   async getUserByBody(query: string) {
@@ -100,14 +109,14 @@ export class UsersService {
     }
   }
 
-  async signUp(createUserDto: CreateUserDto): Promise<SignupUserResponseDto> {
-    const { password } = createUserDto;
-    const user = await this.usersRepository.create({
-      ...createUserDto,
-      password: await hashValue(password)
-    })
-    await this.usersRepository.save(user)
-    return <SignupUserResponseDto>instanceToPlain(user);
+  async registration(createUserDto: CreateUserDto): Promise<SignupUserResponseDto> {
+    const { password, ...userData } = createUserDto;
+    const hash = await hashValue(password);
+    const createUser = this.usersRepository.create({
+      ...userData,
+      password: hash,
+    });
+    const newUser = await this.usersRepository.save(createUser);
+    return <SignupUserResponseDto>instanceToPlain(newUser);
   }
-
 }

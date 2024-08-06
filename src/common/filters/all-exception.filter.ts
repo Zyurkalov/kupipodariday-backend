@@ -1,37 +1,51 @@
-import { ArgumentsHost, Catch, ConflictException, ExceptionFilter, HttpException, NotFoundException } from "@nestjs/common";
+import {
+    ArgumentsHost, Catch, ConflictException, ExceptionFilter,
+    HttpException, NotFoundException, UnauthorizedException,
+} from "@nestjs/common";
 import { Response } from "express";
-import { EntityNotFoundError, NotAcceptedFields} from "typeorm";
+import { EntityNotFoundError, NotAcceptedFields } from "typeorm";
 
-import { DEFAULT_ERRORS } from "src/constants/constants";
+import { MAP_ERRORS } from "src/constants/constants";
 
-@Catch(HttpException)
-export class AllExceptionFilter implements ExceptionFilter { 
+@Catch()
+export class AllExceptionFilter implements ExceptionFilter {
     catch(exception: unknown, host: ArgumentsHost): void {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
         const request = ctx.getRequest<Request>();
         // значения по умолчанию:
-        let status = DEFAULT_ERRORS.default.statusCode; 
-        let message = DEFAULT_ERRORS.default.message;
+        let status = MAP_ERRORS.default.statusCode;
+        let message = MAP_ERRORS.default.message;
 
-        if(exception instanceof EntityNotFoundError) {
-            status = DEFAULT_ERRORS.notFound.statusCode;
-            message = DEFAULT_ERRORS.notFound.message
-        } 
-        if (exception instanceof ConflictException) {
-            status = DEFAULT_ERRORS.userAlreadyExists.statusCode;
-            message = exception.message || DEFAULT_ERRORS.userAlreadyExists.message;  
-        } 
-        if (exception instanceof HttpException) {
+        if (exception instanceof EntityNotFoundError) {
+            status = MAP_ERRORS.notFound.statusCode;
+            message = MAP_ERRORS.notFound.message
+        }
+        else if (exception instanceof ConflictException) {
+            status = MAP_ERRORS.userAlreadyExists.statusCode;
+            message = exception.message || MAP_ERRORS.userAlreadyExists.message;
+        }
+        else if (exception instanceof NotFoundException) {
+            status = MAP_ERRORS.notFound.statusCode
+            message = MAP_ERRORS.notFound.message
+        }
+        else if (exception instanceof UnauthorizedException) {
+            status = MAP_ERRORS.unauthorized.statusCode
+            message = MAP_ERRORS.unauthorized.message
+        }
+        else if (exception instanceof HttpException) {
             const responseBody = exception.getResponse() as { message?: string };
             status = exception.getStatus();
-            message = responseBody.message || DEFAULT_ERRORS.default.message;  
-        } 
+            message = responseBody.message || MAP_ERRORS.default.message;
+        }
+
         response.status(status).json({
-            statusCode: status,
-            timestamp: new Date().toISOString(),
-            path: request.url,
-            message,
+            error: {
+                statusCode: status,
+                timestamp: new Date().toISOString(),
+                path: request.url,
+                message,
+            }
         });
     }
 }

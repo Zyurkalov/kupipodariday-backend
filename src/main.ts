@@ -15,6 +15,7 @@ async function bootstrap() {
     .setTitle('Kupi-podari-day') 
     .setDescription('Education project')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
   const port = configService.get<number>('API_PORT')
   const document = SwaggerModule.createDocument(app, config);

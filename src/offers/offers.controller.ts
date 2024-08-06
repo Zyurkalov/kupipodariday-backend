@@ -6,6 +6,7 @@ import { AuthUser } from 'src/common/decorator/user.decorator';
 import { User } from 'src/users/entities/user.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { Offer } from './entities/offer.entity';
+import { WishesGuard } from './guards/wishes.guard';
 
 @ApiTags('offers')
 @ApiBearerAuth()
@@ -14,13 +15,15 @@ import { Offer } from './entities/offer.entity';
 export class OffersController {
   constructor(private readonly offersService: OffersService) {}
 
+  @UseGuards(WishesGuard)
   @ApiResponse({
     status: 201, 
     type: Object
   })
   @Post()
-  create(@AuthUser() user: User, @Body() createOfferDto: CreateOfferDto) {
-    return this.offersService.create(user,  createOfferDto);
+  create(@AuthUser() user: User, @Body() createOfferDto: CreateOfferDto): Object {
+    this.offersService.create(user,  createOfferDto);
+    return {}
   }
 
   @ApiOkResponse({
@@ -36,8 +39,8 @@ export class OffersController {
     type: Offer
   })
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<Offer> {
-    return this.offersService.findOne(+id);
+  async findOne(@Param('id') id: string): Promise<Offer> {
+    return await this.offersService.findOne(+id);
   }
 
 }

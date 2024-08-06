@@ -10,7 +10,7 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { UserAlreadyExist } from './guards/user-already-exist.guard';
 import { SignupUserResponseDto } from './dto/signup-user-response.dto';
 import { SigninUserResponseDto } from './dto/signin-user-response.dto';
-import { DEFAULT_ERRORS } from 'src/constants/constants';
+import { MAP_ERRORS } from 'src/constants/constants';
 
 @ApiTags('auth')
 @Controller()
@@ -20,34 +20,34 @@ export class AuthController {
     private readonly userService: UsersService,
   ) {}
 
-  @UseGuards(LocalAuthGuard)
+  // @UseGuards(LocalAuthGuard)
   @Post('signin')
   @ApiResponse({ 
     status: 201, 
-    description: 'Пользователь успешно зарегистрирован.', 
+    description: 'Пользователь успешно авторизован', 
     type: SigninUserResponseDto 
   })
   @ApiResponse({ 
-    status: DEFAULT_ERRORS.invalidCredentials.statusCode, 
-    description: DEFAULT_ERRORS.invalidCredentials.message 
+    status: MAP_ERRORS.invalidCredentials.statusCode, 
+    description: MAP_ERRORS.invalidCredentials.message 
   })
   async login(@Body() userData: SigninUserDto): Promise<SigninUserResponseDto>  {
     return await this.authService.validatePassword(userData.username, userData.password);
   }
   
-  // @UseGuards(UserAlreadyExist)
+  @UseGuards(UserAlreadyExist)
   @Post('signup')
   @ApiResponse({ 
     status: 201, 
-    description: 'Пользователь успешно зарегистрирован.', 
+    description: 'Пользователь успешно зарегистрирован', 
     type: SignupUserResponseDto 
   })
   @ApiResponse({ 
-    status: DEFAULT_ERRORS.userAlreadyExists.statusCode, 
-    description: DEFAULT_ERRORS.userAlreadyExists.message 
+    status: MAP_ERRORS.userAlreadyExists.statusCode, 
+    description: MAP_ERRORS.userAlreadyExists.message 
   })
   async create(@Body() createUserDto: CreateUserDto): Promise<SignupUserResponseDto> {
-    return await this.userService.signUp(createUserDto)
+    return await this.userService.registration(createUserDto)
   }
 
 }

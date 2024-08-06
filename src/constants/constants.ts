@@ -20,7 +20,7 @@ export const maxLength_wishList = 1500
 export const EMAIL_REGEXP = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z0-9._-]{2,}$/;
 export const URL_REGEXP = /^(https?:\/\/)?(([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,})(:[0-9]{1,5})?(\/[^\s]*)?$/;
 
-export const DEFAULT_ERRORS = {
+export const MAP_ERRORS = {
     notFound: {
         statusCode: 404,
         message: 'Объект не найден',
@@ -40,5 +40,9 @@ export const DEFAULT_ERRORS = {
     validationError: {
         statusCode: 400,
         message: 'Ошибка валидации переданных значений'
+    },
+    unauthorized: {
+        statusCode: 401,
+        message: 'Необходима аутентификация'
     }
 }

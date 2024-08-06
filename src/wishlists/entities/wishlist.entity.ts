@@ -65,6 +65,6 @@ export class Wishlist extends BaseEntityForIdAndDate {
         description: 'Владелец пожелания',
         example: 'Антон'
     })
-    @ManyToOne(() => User, (owner) => owner.wishlists)
+    @ManyToOne(() => User, (owner) => owner.wishlists, { eager: true })
     owner: User;
 }

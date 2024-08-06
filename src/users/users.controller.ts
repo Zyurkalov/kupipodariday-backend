@@ -9,7 +9,7 @@ import { UserWishesDto } from './dto/user-wihes.dto';
 import { AuthUser } from 'src/common/decorator/user.decorator';
 import { User } from './entities/user.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { DEFAULT_ERRORS } from 'src/constants/constants';
+import { MAP_ERRORS } from 'src/constants/constants';
 import { Wish } from 'src/wishes/entities/wish.entity';
 
 @ApiTags('users')
@@ -21,16 +21,16 @@ export class UsersController {
 
   @ApiOkResponse({ type: UserProfileResponseDto })
   @Get('me')
-  async findMe(@AuthUser() user: User): Promise<UserProfileResponseDto> {
-    return await this.usersService.getMe(user);
+  getMe(@AuthUser() user: User): UserProfileResponseDto {
+    return this.usersService.getMe(user);
   }
 
   @ApiOkResponse({ 
     type: UserProfileResponseDto 
   })
   @ApiResponse({
-    status: DEFAULT_ERRORS.validationError.statusCode, 
-    description: DEFAULT_ERRORS.validationError.message})
+    status: MAP_ERRORS.validationError.statusCode, 
+    description: MAP_ERRORS.validationError.message})
   @Patch('me')
   async update(@AuthUser() user: User, @Body() updateUserDto: UpdateUserDto): Promise<UserProfileResponseDto> {
     return this.usersService.update(user, updateUserDto);
@@ -48,7 +48,7 @@ export class UsersController {
   @ApiOkResponse({ type: UserPublicProfileResponseDto })
   @Get(':username')
   async findUser(@Param('username') userName: string): Promise<UserPublicProfileResponseDto> {
-    return this.usersService.findOne(userName)
+    return this.usersService.findOneByQuery(userName)
   }
 
   @ApiOkResponse({ 
@@ -57,7 +57,7 @@ export class UsersController {
   })
   @Get(':username/wishes')
   async getWishes(@Param('username') userName: string): Promise<Array<UserWishesDto>> {
-    return this.usersService.getUserWishes(userName)
+    return this.usersService.findUserWishes(userName)
   }
 
   @ApiResponse({ 
@@ -75,3 +75,4 @@ export class UsersController {
   //   return this.usersService.remove(+id);
   // }
 }
+

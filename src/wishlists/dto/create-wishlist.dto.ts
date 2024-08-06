@@ -3,7 +3,7 @@ import { Wishlist } from '../entities/wishlist.entity';
 // import IWish from 'src/constants/interface/wish';
 
 export class CreateWhishlistDto extends PartialType(PickType(Wishlist, ['name', 'image'])) {
-    @ApiProperty({example: '[ 1, 101, 4221 ]'})
+    @ApiProperty({example: '[ 0 ]'})
     itemsId: number[]
 
 }

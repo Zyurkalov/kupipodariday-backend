@@ -6,8 +6,9 @@ import { Request } from 'express';
 
 @Injectable()
 export class UserAlreadyExist implements CanActivate {
+    private readonly logger = new Logger('UserAlreadyExist');
+    
     constructor(
-        private readonly logger = new Logger(UserAlreadyExist.name),
         private readonly userService: UsersService
     ) { }
 
@@ -18,21 +19,27 @@ export class UserAlreadyExist implements CanActivate {
         const { username, email } = request.body;
         const currentUser = await this.userService.findUserByBody(username, email)
 
-        try {
-            if (currentUser) {
-                throw new ConflictException(
-                    'Такой пользователь уже существует'
-                )
-            }
-        } catch (err) {
+        // try {
+        //     if (currentUser) {
+        //         throw new ConflictException(
+        //             'Такой пользователь уже существует'
+        //         )
+        //     }
+        // } catch (err) {
+        //     this.logger.error(
+        //         `отклонена попытка авторизации пользователя: 
+        //         ${username} ел.почта: ${email}: ${err.message}`
+        //     );
+        //     throw err;
+        // }
+        if (currentUser) {
             this.logger.error(
                 `отклонена попытка авторизации пользователя: 
-                ${username} ел.почта: ${email}: ${err.message}`
+                ${username} ел.почта: ${email}: Пользователь уже существует`
             );
-            throw err;
+            throw new ConflictException('Такой пользователь уже существует');
         }
-
-
+        
         return true
     }
 }

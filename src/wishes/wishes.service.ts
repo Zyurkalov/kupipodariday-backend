@@ -15,13 +15,18 @@ export class WishesService {
     return await this.wishRepository.save(newWish)
   }
 
-  async getSortedWishes(setting: 'top' | "last", limit: number = 10) {
+  async getSortedWishes(setting: 'top' | "last", limit: number = 10): Promise<Wish[]> {
     const orderDirection: 'DESC' | 'ASC' = setting === 'top' ? 'DESC' : 'ASC';
 
-    return await this.wishRepository.find({
+    const test = await this.wishRepository.find({
       order: { createdAt: orderDirection },
       take: limit,
     });
+    console.log(test)
+    return test
+  }
+  async getUserWish(username: string): Promise<Wish[]>{
+    return this.wishRepository.find({where: {owner: {username: username}}})
   }
 
   async getOne(id: number): Promise<Wish> {

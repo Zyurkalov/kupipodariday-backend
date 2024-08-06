@@ -28,7 +28,7 @@ export class Offer extends BaseEntityForIdAndDate {
         type: () => User,
         description: 'Пользователь', 
     })
-    @ManyToOne(() => User, (user) => user.offers)
+    @ManyToOne(() => User, (user) => user.offers, { eager: true })
     user: User;
 
 

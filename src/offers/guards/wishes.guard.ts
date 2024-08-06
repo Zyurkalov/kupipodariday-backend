@@ -14,12 +14,18 @@ export class WishesGuard implements CanActivate {
         const req = context.switchToHttp().getRequest()
         const userId = req.user.id
         const { amount, itemId } = req.body
-        const { owner, raised, price } = await this.wishesService.getOne(itemId);
+        const { owner, raised, price, offers } = await this.wishesService.getOne(itemId);
+        const isWasOffer =  offers.some((offer) => offer.user.id === userId)
 
         try {
             if (owner.id === userId) {
                 throw new ForbiddenException(
                     'Себе подарок спонсировать нелья',
+                );
+            }
+            if (isWasOffer) {
+                throw new ForbiddenException(
+                    'Вы уже спонсировали этот подарок',
                 );
             }
             if (raised >= price) {

@@ -18,8 +18,8 @@ export class OffersService {
     private readonly dataSource: DataSource,
   ) { }
 
-  async create(user: User, createOfferDto: CreateOfferDto): Promise<any> {
-    const { amount, hidden, itemId } = createOfferDto;
+  async create(currenUser: User, createOfferDto: CreateOfferDto): Promise<any> {
+    const { itemId } = createOfferDto;
     const currentWish = await this.wishService.getOne(itemId);
     
     // Проверка текущего желания
@@ -35,12 +35,16 @@ export class OffersService {
         const createOffer: Offer = this.offersRepository.create({
             ...createOfferDto,
             item: currentWish,
-            user: user,
+            user: currenUser,
         });
+
+        const offer = await queryRunner.manager.save(createOffer);
+        await queryRunner.manager.save(offer)
+        currentWish.offers.push(offer);
 
         await queryRunner.manager.save(currentWish);
         await queryRunner.commitTransaction();
-        return createOffer;
+        return offer;
 
     } catch (error) {
         await queryRunner.rollbackTransaction();

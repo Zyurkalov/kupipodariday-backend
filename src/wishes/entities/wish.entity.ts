@@ -7,7 +7,7 @@ import { BaseEntityForIdAndDate } from "src/constants/entity/base-entity";
 import { Offer } from "src/offers/entities/offer.entity";
 import { User } from "src/users/entities/user.entity";
 import { Wishlist } from "src/wishlists/entities/wishlist.entity";
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany } from "typeorm";
 
 @Entity()
 export class Wish extends BaseEntityForIdAndDate {
@@ -20,11 +20,12 @@ export class Wish extends BaseEntityForIdAndDate {
 
 
     @ApiProperty({
-        description: 'ссылка на интернет-магазин, в котором можно приобрести подарок'
+        description: 'ссылка на интернет-магазин, в котором можно приобрести подарок',
+        example: DEFAULT_VALUES.image
     })
     @IsUrl()
     @IsNotEmpty()
-    @Column()
+    @Column({default: DEFAULT_VALUES.image})
     link: string;
 
 
@@ -55,7 +56,7 @@ export class Wish extends BaseEntityForIdAndDate {
     })
     @IsNumber({ allowNaN: false, allowInfinity: false })
     @Min(minLength)
-    @Column()
+    @Column({default: 0})
     raised: number;
 
 
@@ -80,7 +81,8 @@ export class Wish extends BaseEntityForIdAndDate {
         description: 'пользователь который добавил пожелание подарка', 
         example: 'Антон' 
     })
-    @ManyToOne(() => User, (owner) => owner.wishes)
+    @ManyToOne(() => User, (owner) => owner.wishes, { eager: true })
+    @JoinColumn()
     owner: User;
 
 
@@ -90,6 +92,7 @@ export class Wish extends BaseEntityForIdAndDate {
         isArray: true,
     })
     @IsArray()
-    @OneToMany(() => Offer, (offer) => offer.item)
+    @OneToMany(() => Offer, (offer) => offer.item, { eager: true })
+    @JoinColumn()
     offers: Offer[];
 }

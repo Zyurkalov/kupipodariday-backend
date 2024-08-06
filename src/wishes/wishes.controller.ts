@@ -22,8 +22,9 @@ export class WishesController {
     type: Object,
   })
   @Post()
-  create(@AuthUser() user: User, @Body() createWishDto: CreateWishDto): Promise<Wish> {
-    return this.wishesService.create(user, createWishDto);
+  async create(@AuthUser() user: User, @Body() createWishDto: CreateWishDto): Promise<Object> {
+    await this.wishesService.create(user, createWishDto);
+    return {}
   }
 
   @ApiResponse({ 
