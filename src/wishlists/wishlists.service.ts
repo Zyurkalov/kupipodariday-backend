@@ -7,28 +7,36 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class WhishlistsService {
-  constructor(@InjectRepository(Wishlist) private readonly wishlistRepository: Repository<Wishlist> ) {}
+  constructor(
+    @InjectRepository(Wishlist)
+    private readonly wishlistRepository: Repository<Wishlist>,
+  ) {}
 
   async create(createWhishlistDto: CreateWhishlistDto) {
-    const newWishlist =  await this.wishlistRepository.create(createWhishlistDto)
-    return await this.wishlistRepository.save(newWishlist)
+    const newWishlist = await this.wishlistRepository.create(
+      createWhishlistDto,
+    );
+    return await this.wishlistRepository.save(newWishlist);
   }
 
   async findAll(): Promise<Wishlist[]> {
-    return this.wishlistRepository.find()
+    return this.wishlistRepository.find();
   }
 
   async findOne(id: number) {
-    return this.wishlistRepository.findOneOrFail({where: {id}})
+    return this.wishlistRepository.findOneOrFail({ where: { id } });
   }
 
   async update(id: number, updateWhishlistDto: UpdateWhishlistDto) {
-    const oldWishlist = await this.findOne(id)
-    return await this.wishlistRepository.save({...oldWishlist, ...updateWhishlistDto})
+    const oldWishlist = await this.findOne(id);
+    return await this.wishlistRepository.save({
+      ...oldWishlist,
+      ...updateWhishlistDto,
+    });
   }
 
   async remove(id: number): Promise<Wishlist> {
-    const removingWishlist = await this.findOne(id)
-    return await this.wishlistRepository.remove(removingWishlist)
+    const removingWishlist = await this.findOne(id);
+    return await this.wishlistRepository.remove(removingWishlist);
   }
 }

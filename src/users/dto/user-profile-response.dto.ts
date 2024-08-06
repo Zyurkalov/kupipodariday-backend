@@ -6,6 +6,9 @@ import { User } from '../entities/user.entity';
 //     BaseEntityForIdAndDate
 //     ) {}
 
-export class UserProfileResponseDto extends OmitType(
-    User, ['password','wishes','wishlists','offers',] as const
-) {}
+export class UserProfileResponseDto extends OmitType(User, [
+  'password',
+  'wishes',
+  'wishlists',
+  'offers',
+] as const) {}

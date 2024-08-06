@@ -8,13 +8,14 @@ import { WhishlistsModule } from 'src/wishlists/wishlists.module';
 import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Wish]),
-  forwardRef(() => UsersModule),
-  forwardRef(() => WhishlistsModule),
-  forwardRef(() => AuthModule),
+  imports: [
+    TypeOrmModule.forFeature([Wish]),
+    forwardRef(() => UsersModule),
+    forwardRef(() => WhishlistsModule),
+    forwardRef(() => AuthModule),
   ],
   controllers: [WishesController],
   providers: [WishesService],
   exports: [WishesService],
 })
-export class WishesModule { }
+export class WishesModule {}

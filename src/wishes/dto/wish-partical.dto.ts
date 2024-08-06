@@ -1,4 +1,6 @@
-import { OmitType, PartialType } from "@nestjs/swagger";
-import { Wish } from "../entities/wish.entity";
+import { OmitType, PartialType } from '@nestjs/swagger';
+import { Wish } from '../entities/wish.entity';
 
-export class WishPartical extends PartialType(OmitType(Wish, ['owner', 'offers'])) {}
+export class WishPartical extends PartialType(
+  OmitType(Wish, ['owner', 'offers']),
+) {}

@@ -1,5 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { WishesService } from './wishes.service';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { UpdateWishDto } from './dto/update-wish.dto';
@@ -22,24 +36,27 @@ export class WishesController {
     type: Object,
   })
   @Post()
-  async create(@AuthUser() user: User, @Body() createWishDto: CreateWishDto): Promise<Object> {
+  async create(
+    @AuthUser() user: User,
+    @Body() createWishDto: CreateWishDto,
+  ): Promise<object> {
     await this.wishesService.create(user, createWishDto);
-    return {}
+    return {};
   }
 
-  @ApiResponse({ 
+  @ApiResponse({
     type: Wish,
     isArray: true,
-   })
+  })
   @Get('last')
   findLast(): Promise<Wish[]> {
     return this.wishesService.getSortedWishes('last');
   }
 
-  @ApiOkResponse({ 
+  @ApiOkResponse({
     type: Wish,
     isArray: true,
-   })
+  })
   @Get('top')
   findTop(): Promise<Wish[]> {
     return this.wishesService.getSortedWishes('top');
@@ -54,11 +71,14 @@ export class WishesController {
   @ApiOkResponse({ type: UpdateWishDto })
   @UseGuards(WishOwnerGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateWishDto: UpdateWishDto): Promise<Wish> {
+  update(
+    @Param('id') id: string,
+    @Body() updateWishDto: UpdateWishDto,
+  ): Promise<Wish> {
     return this.wishesService.update(+id, updateWishDto);
   }
 
-  @ApiOkResponse({ type: Wish})
+  @ApiOkResponse({ type: Wish })
   @UseGuards(WishOwnerGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
@@ -66,9 +86,9 @@ export class WishesController {
   }
 
   @UseGuards(JwtAuthGuard, WishNotOwnerGuard)
-  @ApiResponse({ 
+  @ApiResponse({
     status: 201,
-    type: Object 
+    type: Object,
   })
   @Post(':id/copy')
   copy(@Param('id') id: string, @AuthUser() user: User): Promise<Wish> {

@@ -1,5 +1,10 @@
 import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { OffersService } from './offers.service';
 import { CreateOfferDto } from './dto/create-offer.dto';
 import { AuthUser } from 'src/common/decorator/user.decorator';
@@ -17,13 +22,16 @@ export class OffersController {
 
   @UseGuards(WishesGuard)
   @ApiResponse({
-    status: 201, 
-    type: Object
+    status: 201,
+    type: Object,
   })
   @Post()
-  create(@AuthUser() user: User, @Body() createOfferDto: CreateOfferDto): Object {
-    this.offersService.create(user,  createOfferDto);
-    return {}
+  create(
+    @AuthUser() user: User,
+    @Body() createOfferDto: CreateOfferDto,
+  ): object {
+    this.offersService.create(user, createOfferDto);
+    return {};
   }
 
   @ApiOkResponse({
@@ -36,11 +44,10 @@ export class OffersController {
   }
 
   @ApiOkResponse({
-    type: Offer
+    type: Offer,
   })
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Offer> {
     return await this.offersService.findOne(+id);
   }
-
 }

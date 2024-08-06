@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
-import { join } from 'path';
 import { Wish } from 'src/wishes/entities/wish.entity';
 import { Wishlist } from 'src/wishlists/entities/wishlist.entity';
 import { User } from 'src/users/entities/user.entity';
@@ -9,8 +8,7 @@ import { Offer } from 'src/offers/entities/offer.entity';
 
 @Injectable()
 export class DatabaseConfigFactory implements TypeOrmOptionsFactory {
-  constructor(private readonly configService: ConfigService) {
-  }
+  constructor(private readonly configService: ConfigService) {}
   createTypeOrmOptions(): TypeOrmModuleOptions {
     return {
       type: 'postgres',

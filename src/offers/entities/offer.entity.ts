@@ -1,42 +1,39 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { BaseEntityForIdAndDate } from "src/constants/entity/base-entity";
-import { Column, Entity, ManyToOne } from "typeorm";
-import { IsBoolean, IsNotEmpty, IsNumber } from "class-validator";
-import { Wish } from "src/wishes/entities/wish.entity";
-import { User } from "src/users/entities/user.entity";
+import { ApiProperty } from '@nestjs/swagger';
+import { BaseEntityForIdAndDate } from 'src/constants/entity/base-entity';
+import { Column, Entity, ManyToOne } from 'typeorm';
+import { IsBoolean, IsNotEmpty, IsNumber } from 'class-validator';
+import { Wish } from 'src/wishes/entities/wish.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Entity()
 export class Offer extends BaseEntityForIdAndDate {
+  @ApiProperty({ description: 'Сумма заявки' })
+  @IsNotEmpty()
+  @IsNumber({ allowNaN: false, allowInfinity: false })
+  @Column()
+  amount: number;
 
+  @ApiProperty({
+    description:
+      'Флаг, который определяет показывать ли информацию о дарителях',
+  })
+  @IsNotEmpty()
+  @IsBoolean()
+  @Column({ default: false })
+  hidden: boolean;
 
-    @ApiProperty({ description: 'Сумма заявки' })
-    @IsNotEmpty()
-    @IsNumber({ allowNaN: false, allowInfinity: false })
-    @Column()
-    amount: number;
+  @ApiProperty({
+    type: () => User,
+    description: 'Пользователь',
+  })
+  @ManyToOne(() => User, (user) => user.offers, { eager: true })
+  user: User;
 
-
-    @ApiProperty({
-        description: 'Флаг, который определяет показывать ли информацию о дарителях'
-    })
-    @IsNotEmpty()
-    @IsBoolean()
-    @Column({ default: false })
-    hidden: boolean;
-
-    @ApiProperty({
-        type: () => User,
-        description: 'Пользователь', 
-    })
-    @ManyToOne(() => User, (user) => user.offers, { eager: true })
-    user: User;
-
-
-    @ApiProperty({
-        type: () => Wish,
-        description: 'Подарок'
-    })
-    @IsNotEmpty()
-    @ManyToOne(() => Wish, (item) => item.id)
-    item: Wish;
+  @ApiProperty({
+    type: () => Wish,
+    description: 'Подарок',
+  })
+  @IsNotEmpty()
+  @ManyToOne(() => Wish, (item) => item.id)
+  item: Wish;
 }

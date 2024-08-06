@@ -1,5 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { FindUsersDto } from './dto/find-user.dto';
 import { UpdateUserDto } from 'src/auth/dto/update-user.dto';
@@ -17,7 +30,7 @@ import { Wish } from 'src/wishes/entities/wish.entity';
 @UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
 
   @ApiOkResponse({ type: UserProfileResponseDto })
   @Get('me')
@@ -25,19 +38,23 @@ export class UsersController {
     return this.usersService.getMe(user);
   }
 
-  @ApiOkResponse({ 
-    type: UserProfileResponseDto 
+  @ApiOkResponse({
+    type: UserProfileResponseDto,
   })
   @ApiResponse({
-    status: MAP_ERRORS.validationError.statusCode, 
-    description: MAP_ERRORS.validationError.message})
+    status: MAP_ERRORS.validationError.statusCode,
+    description: MAP_ERRORS.validationError.message,
+  })
   @Patch('me')
-  async update(@AuthUser() user: User, @Body() updateUserDto: UpdateUserDto): Promise<UserProfileResponseDto> {
+  async update(
+    @AuthUser() user: User,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<UserProfileResponseDto> {
     return this.usersService.update(user, updateUserDto);
   }
 
-  @ApiOkResponse({ 
-    type: Wish, 
+  @ApiOkResponse({
+    type: Wish,
     isArray: true,
   })
   @Get('me/wishes')
@@ -47,32 +64,37 @@ export class UsersController {
 
   @ApiOkResponse({ type: UserPublicProfileResponseDto })
   @Get(':username')
-  async findUser(@Param('username') userName: string): Promise<UserPublicProfileResponseDto> {
-    return this.usersService.findOneByQuery(userName)
+  async findUser(
+    @Param('username') userName: string,
+  ): Promise<UserPublicProfileResponseDto> {
+    return this.usersService.findOneByQuery(userName);
   }
 
-  @ApiOkResponse({ 
+  @ApiOkResponse({
     type: UserWishesDto,
     isArray: true,
   })
   @Get(':username/wishes')
-  async getWishes(@Param('username') userName: string): Promise<Array<UserWishesDto>> {
-    return this.usersService.findUserWishes(userName)
+  async getWishes(
+    @Param('username') userName: string,
+  ): Promise<Array<UserWishesDto>> {
+    return this.usersService.findUserWishes(userName);
   }
 
-  @ApiResponse({ 
+  @ApiResponse({
     status: 201,
     type: UserProfileResponseDto,
     isArray: true,
   })
   @Post('find')
-  async findUserByBody(@Body() body: FindUsersDto): Promise<UserProfileResponseDto > {
-    return this.usersService.getUserByBody(body.query)
+  async findUserByBody(
+    @Body() body: FindUsersDto,
+  ): Promise<UserProfileResponseDto> {
+    return this.usersService.getUserByBody(body.query);
   }
-  
+
   // @Delete(':id')
   // remove(@Param('id') id: string) {
   //   return this.usersService.remove(+id);
   // }
 }
-

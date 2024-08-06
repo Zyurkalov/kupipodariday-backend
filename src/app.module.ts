@@ -5,11 +5,10 @@ import { WishesModule } from './wishes/wishes.module';
 import { OffersModule } from './offers/offers.module';
 import { WhishlistsModule } from './wishlists/wishlists.module';
 import { AuthModule } from './auth/auth.module';
-import { ConfigModule, ConfigService} from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseConfigFactory } from './config/database-config.factory';
 import configuration from './config/configuration';
-import { join } from 'path';
 
 @Module({
   imports: [
@@ -18,7 +17,7 @@ import { join } from 'path';
       load: [configuration],
     }),
     TypeOrmModule.forRootAsync({
-      useClass: DatabaseConfigFactory
+      useClass: DatabaseConfigFactory,
     }),
 
     AuthModule,
@@ -28,7 +27,6 @@ import { join } from 'path';
     WhishlistsModule,
   ],
   controllers: [AppController],
-  providers:[],
+  providers: [],
 })
-export class AppModule {
-}
+export class AppModule {}

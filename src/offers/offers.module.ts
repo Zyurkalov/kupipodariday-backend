@@ -6,13 +6,13 @@ import { Offer } from './entities/offer.entity';
 import { AuthModule } from 'src/auth/auth.module';
 import { UsersModule } from 'src/users/users.module';
 import { WishesModule } from 'src/wishes/wishes.module';
-import { UsersService } from 'src/users/users.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Offer]),
-  forwardRef(()=> AuthModule),
-  forwardRef(()=> UsersModule),
-  forwardRef(()=> WishesModule),
+  imports: [
+    TypeOrmModule.forFeature([Offer]),
+    forwardRef(() => AuthModule),
+    forwardRef(() => UsersModule),
+    forwardRef(() => WishesModule),
   ],
   controllers: [OffersController],
   providers: [OffersService],

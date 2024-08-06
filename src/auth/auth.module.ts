@@ -20,7 +20,13 @@ import { UserAlreadyExist } from './guards/user-already-exist.guard';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, JwtConfigFactory, UserAlreadyExist],
-  exports: [AuthService]
+  providers: [
+    AuthService,
+    LocalStrategy,
+    JwtStrategy,
+    JwtConfigFactory,
+    UserAlreadyExist,
+  ],
+  exports: [AuthService],
 })
 export class AuthModule {}
