@@ -18,6 +18,7 @@ import {
 import { Wish } from 'src/wishes/entities/wish.entity';
 import { User } from 'src/users/entities/user.entity';
 import { WishPartical } from 'src/wishes/dto/wish-partical.dto';
+import { UserPublicProfileResponseDto } from 'src/users/dto/user-public-profile-response.dto';
 
 // export class Wishlist extends IntersectionType(
 //     BaseEntityForIdAndDate,
@@ -44,15 +45,6 @@ export class Wishlist extends BaseEntityForIdAndDate {
   description: string;
 
   @ApiProperty({
-    type: () => WishPartical,
-    description: 'Список подарков',
-    isArray: true,
-  })
-  @JoinTable()
-  @ManyToMany(() => Wish)
-  items: Wish[];
-
-  @ApiProperty({
     description: 'Картинка списка',
     example: DEFAULT_VALUES.image,
   })
@@ -62,17 +54,19 @@ export class Wishlist extends BaseEntityForIdAndDate {
   image: string;
 
   @ApiProperty({
-    type: () =>
-      OmitType(User, [
-        'password',
-        'wishes',
-        'wishlists',
-        'offers',
-        'email',
-      ] as const),
-    description: 'Владелец пожелания',
-    example: 'Антон',
+    type: () => UserPublicProfileResponseDto,
+    // description: 'Владелец пожелания',
+    // example: 'Антон',
   })
-  @ManyToOne(() => User, (owner) => owner.wishlists, { eager: true })
+  @ManyToOne(() => User, (owner) => owner.wishlists)
   owner: User;
+
+  @ApiProperty({
+    type: () => WishPartical,
+    description: 'Список подарков',
+    isArray: true,
+  })
+
+  @ManyToMany(() => Wish)
+  items: Wish[];
 }

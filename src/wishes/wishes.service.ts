@@ -23,12 +23,11 @@ export class WishesService {
   async getSortedWishes(setting: 'top' | 'last', limit = 10): Promise<Wish[]> {
     const orderDirection: 'DESC' | 'ASC' = setting === 'top' ? 'DESC' : 'ASC';
 
-    const test = await this.wishRepository.find({
+    const wishlist = await this.wishRepository.find({
       order: { createdAt: orderDirection },
       take: limit,
     });
-    console.log(test);
-    return test;
+    return wishlist;
   }
   async getUserWish(username: string): Promise<Wish[]> {
     return this.wishRepository.find({
@@ -52,7 +51,9 @@ export class WishesService {
   }
 
   async remove(id: number) {
-    await this.getOne(id);
+    console.log(id)
+    const test = await this.getOne(id);
+    console.log(test)
     await this.wishRepository.delete(id);
   }
 }

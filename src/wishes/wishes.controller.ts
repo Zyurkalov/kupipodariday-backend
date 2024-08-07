@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiExtraModels,
   ApiOkResponse,
   ApiResponse,
   ApiTags,
@@ -25,6 +26,7 @@ import { WishOwnerGuard } from 'src/wishes/guards/wish-owner.guard';
 import { WishNotOwnerGuard } from 'src/wishes/guards/wish-not-owner.guard';
 
 @ApiTags('wishes')
+@ApiExtraModels(Wish)
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('wishes')
@@ -50,7 +52,7 @@ export class WishesController {
   })
   @Get('last')
   findLast(): Promise<Wish[]> {
-    return this.wishesService.getSortedWishes('last');
+    return this.wishesService.getSortedWishes('last', 40);
   }
 
   @ApiOkResponse({
@@ -69,7 +71,7 @@ export class WishesController {
   }
 
   @ApiOkResponse({ type: UpdateWishDto })
-  @UseGuards(WishOwnerGuard)
+  // @UseGuards(WishOwnerGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -82,10 +84,11 @@ export class WishesController {
   @UseGuards(WishOwnerGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
+    console.log(id)
     return this.wishesService.remove(+id);
   }
 
-  @UseGuards(JwtAuthGuard, WishNotOwnerGuard)
+  @UseGuards(WishNotOwnerGuard)
   @ApiResponse({
     status: 201,
     type: Object,

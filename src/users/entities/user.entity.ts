@@ -19,6 +19,7 @@ import {
 import { Wish } from 'src/wishes/entities/wish.entity';
 import { Wishlist } from 'src/wishlists/entities/wishlist.entity';
 import { Offer } from 'src/offers/entities/offer.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User extends BaseEntityForIdAndDate {
@@ -75,8 +76,8 @@ export class User extends BaseEntityForIdAndDate {
   password: string;
 
   @ApiProperty({
-    type: () => Wish,
     description: 'список желаемых подарков',
+    type: () => Wish,
     isArray: true,
   })
   @IsArray()
@@ -84,17 +85,19 @@ export class User extends BaseEntityForIdAndDate {
   wishes: Wish[];
 
   @ApiProperty({
-    type: () => Offer,
-    description: 'список дарителей',
+    description: 'список подарков которые спонсировал пользователь',
+    type: () => Wish,
     isArray: true,
   })
   @IsArray()
-  @OneToMany(() => Offer, (offers) => offers.user)
-  offers: Offer[];
+  // @OneToMany(() => Offer, (offers) => offers.user)
+  // offers: Offer[];
+  @OneToMany(() => Wish, (wishes) => wishes.offers)
+  offers: Wish[];
 
   @ApiProperty({
     type: () => Wishlist,
-    description: 'список вишлистов, которые создал пользователь',
+    // description: 'список вишлистов, которые создал пользователь',
     isArray: true,
   })
   @IsArray()

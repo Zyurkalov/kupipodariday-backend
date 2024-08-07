@@ -17,8 +17,10 @@ import {
 import { BaseEntityForIdAndDate } from 'src/constants/entity/base-entity';
 // import IWish from "src/constants/interface/wish";
 import { Offer } from 'src/offers/entities/offer.entity';
+import { UserPublicProfileResponseDto } from 'src/users/dto/user-public-profile-response.dto';
 import { User } from 'src/users/entities/user.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Wishlist } from 'src/wishlists/entities/wishlist.entity';
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity()
 export class Wish extends BaseEntityForIdAndDate {
@@ -49,7 +51,7 @@ export class Wish extends BaseEntityForIdAndDate {
 
   @ApiProperty({
     description: 'стоимость подарка',
-    example: 1_000_000,
+    example: 10_000,
   })
   @IsNumber({ allowNaN: false, allowInfinity: false })
   @Min(minLength)
@@ -81,28 +83,23 @@ export class Wish extends BaseEntityForIdAndDate {
   description: string;
 
   @ApiProperty({
-    type: () =>
-      OmitType(User, [
-        'password',
-        'wishes',
-        'wishlists',
-        'offers',
-        'email',
-      ] as const),
-    description: 'пользователь который добавил пожелание подарка',
-    example: 'Антон',
+    type: () => UserPublicProfileResponseDto,
+    // description: 'пользователь который добавил пожелание подарка',
+    // example: 'Антон',
   })
-  @ManyToOne(() => User, (owner) => owner.wishes, { eager: true })
-  @JoinColumn()
-  owner: User;
+  // @ManyToOne(() => User, (owner) => owner.wishes)
+  owner: UserPublicProfileResponseDto;
 
   @ApiProperty({
     type: () => Offer,
-    description: 'список дарителей',
+    // description: 'список дарителей',
     isArray: true,
   })
   @IsArray()
-  @OneToMany(() => Offer, (offer) => offer.item, { eager: true })
-  @JoinColumn()
+  @OneToMany(() => Offer, (offer) => offer.item)
   offers: Offer[];
+
+  // @ManyToMany(() => Wishlist)
+  // Wishlists: Wishlist[];
+
 }

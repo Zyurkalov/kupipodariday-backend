@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiExtraModels,
   ApiOkResponse,
   ApiResponse,
   ApiTags,
@@ -14,6 +15,7 @@ import { Offer } from './entities/offer.entity';
 import { WishesGuard } from './guards/wishes.guard';
 
 @ApiTags('offers')
+@ApiExtraModels(Offer)
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('offers')

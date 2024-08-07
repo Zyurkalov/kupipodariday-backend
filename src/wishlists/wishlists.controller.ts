@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiExtraModels,
   ApiOkResponse,
   ApiResponse,
   ApiTags,
@@ -19,8 +20,10 @@ import { CreateWhishlistDto } from './dto/create-wishlist.dto';
 import { UpdateWhishlistDto } from './dto/update-wishlist.dto';
 import { Wishlist } from './entities/wishlist.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { UserProfileResponseDto } from 'src/users/dto/user-profile-response.dto';
 
 @ApiTags('wishlist')
+@ApiExtraModels(Wishlist)
 @Controller('wishlistlists')
 export class WhishlistsController {
   constructor(private readonly whishlistsService: WhishlistsService) {}

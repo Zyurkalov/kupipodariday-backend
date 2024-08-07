@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiExtraModels,
   ApiOkResponse,
   ApiResponse,
   ApiTags,
@@ -26,6 +27,7 @@ import { MAP_ERRORS } from 'src/constants/constants';
 import { Wish } from 'src/wishes/entities/wish.entity';
 
 @ApiTags('users')
+@ApiExtraModels(User)
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('users')

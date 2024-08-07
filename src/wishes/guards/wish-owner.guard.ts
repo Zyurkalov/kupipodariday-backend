@@ -12,7 +12,7 @@ export class WishOwnerGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
-    const userWishes: Wish[] = req.user.wishes;
+    const userWishes: Wish[] = req.user.wishes || [];
     const wishId: number = +req.params.id;
 
     const wishExists = userWishes.some((wish) => wish.id === wishId);
