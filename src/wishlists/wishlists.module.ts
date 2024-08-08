@@ -6,16 +6,18 @@ import { Wishlist } from './entities/wishlist.entity';
 import { UsersModule } from 'src/users/users.module';
 import { WishesModule } from 'src/wishes/wishes.module';
 import { AuthModule } from 'src/auth/auth.module';
+import { WishesService } from 'src/wishes/wishes.service';
+import { Wish } from 'src/wishes/entities/wish.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Wishlist]),
+    TypeOrmModule.forFeature([Wishlist, Wish]),
     forwardRef(() => UsersModule),
     forwardRef(() => WishesModule),
     forwardRef(() => AuthModule),
   ],
   controllers: [WhishlistsController],
-  providers: [WhishlistsService],
+  providers: [WhishlistsService, WishesService],
   exports: [WhishlistsService],
 })
 export class WhishlistsModule {}

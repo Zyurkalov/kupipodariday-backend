@@ -22,6 +22,8 @@ export class AllExceptionFilter implements ExceptionFilter {
     let status = MAP_ERRORS.default.statusCode;
     let message = MAP_ERRORS.default.message;
 
+    console.log('------------------ExceptionFilter------------------------');
+
     if (exception instanceof EntityNotFoundError) {
       status = MAP_ERRORS.notFound.statusCode;
       message = MAP_ERRORS.notFound.message;

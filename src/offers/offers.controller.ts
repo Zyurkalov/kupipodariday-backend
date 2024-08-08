@@ -28,11 +28,11 @@ export class OffersController {
     type: Object,
   })
   @Post()
-  create(
+  async create(
     @AuthUser() user: User,
     @Body() createOfferDto: CreateOfferDto,
-  ): object {
-    this.offersService.create(user, createOfferDto);
+  ): Promise<object> {
+    await this.offersService.create(user, createOfferDto);
     return {};
   }
 
@@ -42,7 +42,7 @@ export class OffersController {
   })
   @Get()
   findAll(): Promise<Offer[]> {
-    return this.offersService.findAll();
+    return this.offersService.getAll();
   }
 
   @ApiOkResponse({
@@ -50,6 +50,6 @@ export class OffersController {
   })
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Offer> {
-    return await this.offersService.findOne(+id);
+    return await this.offersService.getOne(+id);
   }
 }

@@ -1,7 +1,11 @@
-import { ApiProperty, PickType } from '@nestjs/swagger';
-import { User } from '../entities/user.entity';
+import { ApiProperty } from '@nestjs/swagger';
 import { BaseEntityForIdAndDate } from 'src/constants/entity/base-entity';
-import { DEFAULT_VALUES, maxLength_about, maxLength_username, minLength } from 'src/constants/constants';
+import {
+  DEFAULT_VALUES,
+  maxLength_about,
+  maxLength_username,
+  minLength,
+} from 'src/constants/constants';
 import { IsNotEmpty, IsString, IsUrl, Length } from 'class-validator';
 import { Column } from 'typeorm';
 

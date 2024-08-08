@@ -71,12 +71,12 @@ export class WishesController {
   }
 
   @ApiOkResponse({ type: UpdateWishDto })
-  // @UseGuards(WishOwnerGuard)
+  @UseGuards(WishOwnerGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,
     @Body() updateWishDto: UpdateWishDto,
-  ): Promise<Wish> {
+  ): Promise<UpdateWishDto> {
     return this.wishesService.update(+id, updateWishDto);
   }
 
@@ -84,7 +84,7 @@ export class WishesController {
   @UseGuards(WishOwnerGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
-    console.log(id)
+    console.log(id);
     return this.wishesService.remove(+id);
   }
 
@@ -94,7 +94,7 @@ export class WishesController {
     type: Object,
   })
   @Post(':id/copy')
-  copy(@Param('id') id: string, @AuthUser() user: User): Promise<Wish> {
-    return this.wishesService.copy(+id, user);
+  async copy(@Param('id') id: string, @AuthUser() user: User): Promise<object> {
+    return await this.wishesService.copy(+id, user);
   }
 }

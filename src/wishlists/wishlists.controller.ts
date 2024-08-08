@@ -16,11 +16,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { WhishlistsService } from './wishlists.service';
-import { CreateWhishlistDto } from './dto/create-wishlist.dto';
+import { CreateWishlistDto } from './dto/create-wishlist.dto';
 import { UpdateWhishlistDto } from './dto/update-wishlist.dto';
 import { Wishlist } from './entities/wishlist.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { UserProfileResponseDto } from 'src/users/dto/user-profile-response.dto';
+import { AuthUser } from 'src/common/decorator/user.decorator';
+import { User } from 'src/users/entities/user.entity';
 
 @ApiTags('wishlist')
 @ApiExtraModels(Wishlist)
@@ -45,9 +46,10 @@ export class WhishlistsController {
   })
   @Post()
   async create(
-    @Body() createWhishlistDto: CreateWhishlistDto,
+    @AuthUser() user: User,
+    @Body() createWhishlistDto: CreateWishlistDto,
   ): Promise<Wishlist> {
-    return await this.whishlistsService.create(createWhishlistDto);
+    return await this.whishlistsService.create(user, createWhishlistDto);
   }
 
   @ApiBearerAuth()

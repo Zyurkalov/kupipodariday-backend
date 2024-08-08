@@ -36,7 +36,7 @@ export class UsersController {
 
   @ApiOkResponse({ type: UserProfileResponseDto })
   @Get('me')
-  getMe(@AuthUser() user: User): UserProfileResponseDto {
+  getMe(@AuthUser() user: User): Promise<UserProfileResponseDto> {
     return this.usersService.getMe(user);
   }
 
@@ -62,6 +62,7 @@ export class UsersController {
   @Get('me/wishes')
   async findMyWish(@AuthUser() user: User): Promise<Wish[]> {
     return await this.usersService.getMyWish(user);
+    // return await this.usersService.getOwnWishes(user.id);
   }
 
   @ApiOkResponse({ type: UserPublicProfileResponseDto })
@@ -91,7 +92,7 @@ export class UsersController {
   @Post('find')
   async findUserByBody(
     @Body() body: FindUsersDto,
-  ): Promise<UserProfileResponseDto> {
+  ): Promise<UserProfileResponseDto[]> {
     return this.usersService.getUserByBody(body.query);
   }
 

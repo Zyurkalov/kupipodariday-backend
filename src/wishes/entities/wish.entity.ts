@@ -1,4 +1,4 @@
-import { ApiProperty, OmitType } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
   IsNotEmpty,
@@ -17,14 +17,12 @@ import {
 import { BaseEntityForIdAndDate } from 'src/constants/entity/base-entity';
 // import IWish from "src/constants/interface/wish";
 import { Offer } from 'src/offers/entities/offer.entity';
-import { UserPublicProfileResponseDto } from 'src/users/dto/user-public-profile-response.dto';
 import { User } from 'src/users/entities/user.entity';
-import { Wishlist } from 'src/wishlists/entities/wishlist.entity';
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity()
 export class Wish extends BaseEntityForIdAndDate {
-  @ApiProperty({ description: 'название подарка' })
+  @ApiProperty({ description: 'название подарка', example: 'мой подарок' })
   @IsString()
   @Length(minLength, maxLength_wishname)
   @Column()
@@ -83,23 +81,19 @@ export class Wish extends BaseEntityForIdAndDate {
   description: string;
 
   @ApiProperty({
-    type: () => UserPublicProfileResponseDto,
-    // description: 'пользователь который добавил пожелание подарка',
-    // example: 'Антон',
+    type: () => User,
   })
-  // @ManyToOne(() => User, (owner) => owner.wishes)
-  owner: UserPublicProfileResponseDto;
+  // @Expose()
+  @ManyToOne(() => User, (owner) => owner.wishes)
+  // @Exclude({ toPlainOnly: true })
+  owner: User;
 
   @ApiProperty({
     type: () => Offer,
-    // description: 'список дарителей',
     isArray: true,
   })
   @IsArray()
   @OneToMany(() => Offer, (offer) => offer.item)
+  // @Exclude({ toClassOnly: true })
   offers: Offer[];
-
-  // @ManyToMany(() => Wishlist)
-  // Wishlists: Wishlist[];
-
 }

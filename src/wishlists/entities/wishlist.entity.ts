@@ -1,5 +1,5 @@
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
-import { ApiProperty, OmitType } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsNotEmpty,
   IsOptional,
@@ -19,12 +19,6 @@ import { Wish } from 'src/wishes/entities/wish.entity';
 import { User } from 'src/users/entities/user.entity';
 import { WishPartical } from 'src/wishes/dto/wish-partical.dto';
 import { UserPublicProfileResponseDto } from 'src/users/dto/user-public-profile-response.dto';
-
-// export class Wishlist extends IntersectionType(
-//     BaseEntityForIdAndDate,
-//     PickType(Wish, ['image', 'owner'] as const)) {
-
-// export class Wishlist extends BaseEntityForIdAndDate {
 
 @Entity()
 export class Wishlist extends BaseEntityForIdAndDate {
@@ -55,18 +49,15 @@ export class Wishlist extends BaseEntityForIdAndDate {
 
   @ApiProperty({
     type: () => UserPublicProfileResponseDto,
-    // description: 'Владелец пожелания',
-    // example: 'Антон',
   })
   @ManyToOne(() => User, (owner) => owner.wishlists)
   owner: User;
 
   @ApiProperty({
     type: () => WishPartical,
-    description: 'Список подарков',
     isArray: true,
   })
-
-  @ManyToMany(() => Wish)
+  @ManyToMany(() => Wish, { eager: true })
+  @JoinTable()
   items: Wish[];
 }

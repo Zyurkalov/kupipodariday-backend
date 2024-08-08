@@ -71,8 +71,8 @@ export class User extends BaseEntityForIdAndDate {
   })
   @IsNotEmpty()
   @IsString()
-  // @Exclude()
   @Column({ select: false })
+  // @Exclude()
   password: string;
 
   @ApiProperty({
@@ -81,26 +81,29 @@ export class User extends BaseEntityForIdAndDate {
     isArray: true,
   })
   @IsArray()
+  // @Expose()
+  @Exclude()
   @OneToMany(() => Wish, (wishes) => wishes.owner)
   wishes: Wish[];
 
   @ApiProperty({
-    description: 'список подарков которые спонсировал пользователь',
-    type: () => Wish,
+    type: () => Offer,
     isArray: true,
   })
   @IsArray()
-  // @OneToMany(() => Offer, (offers) => offers.user)
-  // offers: Offer[];
-  @OneToMany(() => Wish, (wishes) => wishes.offers)
-  offers: Wish[];
+  // @Expose()
+  @Exclude()
+  @OneToMany(() => Offer, (offers) => offers.user)
+  offers: Offer[];
 
   @ApiProperty({
     type: () => Wishlist,
-    // description: 'список вишлистов, которые создал пользователь',
     isArray: true,
   })
   @IsArray()
+  // @Expose()
+  @Exclude()
   @OneToMany(() => Wishlist, (wishlists) => wishlists.owner)
+  // @OneToMany(() => Wishlist, (wishlists) => wishlists.owner, { eager: true })
   wishlists: Wishlist[];
 }

@@ -1,10 +1,8 @@
-import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
 import { Wishlist } from '../entities/wishlist.entity';
-// import IWish from 'src/constants/interface/wish';
-
-export class CreateWhishlistDto extends PartialType(
-  PickType(Wishlist, ['name', 'image']),
-) {
-  @ApiProperty({ example: '[ 0 ]' })
-  itemsId: number[];
+import { IsNotEmpty } from 'class-validator';
+export class CreateWishlistDto extends OmitType(Wishlist, ['owner', 'items']) {
+  @ApiProperty({ example: '[ 0 ]', isArray: true })
+  @IsNotEmpty()
+  itemsId: Array<number>;
 }

@@ -7,26 +7,24 @@ import { User } from 'src/users/entities/user.entity';
 
 @Entity()
 export class Offer extends BaseEntityForIdAndDate {
-
-  @ApiProperty({ description: 'Сумма заявки' })
+  @ApiProperty({ description: 'Сумма заявки', example: false })
   @IsNotEmpty()
   @IsNumber({ allowNaN: false, allowInfinity: false })
   @Column()
   amount: number;
 
   @ApiProperty({
-    description:
-      'Флаг, который определяет показывать ли информацию о дарителях',
+    description: 'Флаг, который определяет показывать ли информацию',
+    default: false,
   })
-  // @IsNotEmpty()
   @IsBoolean()
-  @Column({ default: false })
+  @Column()
   hidden: boolean;
 
   @ApiProperty({
     type: () => User,
   })
-  @ManyToOne(() => User, (user) => user.offers)
+  @ManyToOne(() => User, (user) => user.offers, { eager: true })
   user: User;
 
   @ApiProperty({

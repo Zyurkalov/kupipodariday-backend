@@ -26,8 +26,14 @@ export class UsersService {
     return await this.usersRepository.find();
   }
 
-  getMe(user: User): UserProfileResponseDto {
+  async getMe(user: User): Promise<UserProfileResponseDto> {
+    // const allUserData = await await this.usersRepository.findOne({
+    //   where: { id: user.id },
+    //   relations: ['wishes', 'offers', 'wishlists'], // Указываем, какие связи нужно загрузить
+    // });
+
     const currentUser = <UserProfileResponseDto>instanceToPlain(user);
+    console.log(currentUser);
     return currentUser;
     // instanceToPlain(user) - преобразует user, в нашем случае экземпляр User - в объект
     // <UserProfileResponseDto> указывает, какие типы должны быть извлечены из instanceToPlain(user)
@@ -35,7 +41,11 @@ export class UsersService {
   async getMyWish(user: User): Promise<Wish[]> {
     // console.log(await this.findAllByQuery({ where: { username: user.username } }))
     // return await this.findAllByQuery({ where: { username: user.username } })['wishes']
-    return await this.wishSevice.getUserWish(user.username);
+    return await this.wishSevice.getWishesByUsername(user.username);
+  }
+  async findUserWishes(name: string): Promise<UserWishesDto[]> {
+    // return await this.findAllByQuery({ where: { username: name } })['wishes'];
+    return await this.wishSevice.getWishesByUsername(name);
   }
 
   async findAllByQuery(query: FindManyOptions<User>): Promise<User[]> {
@@ -58,14 +68,11 @@ export class UsersService {
     return await this.getUserByQuery({ where: { id: userId } });
   }
 
-  async findUserWishes(name: string): Promise<UserWishesDto[]> {
-    return await this.findAllByQuery({ where: { username: name } })['wishes'];
-  }
-
   async getUserByBody(query: string) {
-    return await this.usersRepository.findOneOrFail({
+    const user = await this.usersRepository.findOneOrFail({
       where: [{ username: query }, { email: query }],
     });
+    return [user];
   }
 
   // для поиска внутри гардов, вызывать ошибку "OrFail" не нужно
@@ -126,8 +133,11 @@ export class UsersService {
   ): Promise<SignupUserResponseDto> {
     const { password, ...userData } = createUserDto;
     const hash = await hashValue(password);
-    const createUser = this.usersRepository.create({
+    const createUser: User = this.usersRepository.create({
       ...userData,
+      // wishes: [],
+      // wishlists: [],
+      // offers: [],
       password: hash,
     });
     const newUser = await this.usersRepository.save(createUser);

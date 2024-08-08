@@ -8,6 +8,7 @@ import { UserAlreadyExist } from './guards/user-already-exist.guard';
 import { SignupUserResponseDto } from './dto/signup-user-response.dto';
 import { SigninUserResponseDto } from './dto/signin-user-response.dto';
 import { MAP_ERRORS } from 'src/constants/constants';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @ApiTags('auth')
 @Controller()
@@ -17,7 +18,7 @@ export class AuthController {
     private readonly userService: UsersService,
   ) {}
 
-  // @UseGuards(LocalAuthGuard)
+  @UseGuards(LocalAuthGuard)
   @Post('signin')
   @ApiResponse({
     status: 201,

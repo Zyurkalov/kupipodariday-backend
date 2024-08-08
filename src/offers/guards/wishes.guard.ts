@@ -16,24 +16,26 @@ export class WishesGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
     const userId = req.user.id;
-    const { amount, itemId } = req.body;
-    const { owner, raised, price, offers } = await this.wishesService.getOne(
-      itemId,
-    );
-    const isWasOffer = offers.some((offer) => offer.user.id === userId);
 
+    const { amount, itemId } = req.body;
+    const { owner, raised, price } = await this.wishesService.getOne(itemId);
+    // const isWasOffer = offers.some((offer) => offer.user.id === userId);
+
+    console.log(raised + amount);
     try {
       if (owner.id === userId) {
         throw new ForbiddenException('Себе подарок спонсировать нелья');
       }
-      if (isWasOffer) {
-        throw new ForbiddenException('Вы уже спонсировали этот подарок');
-      }
-      if (raised >= price) {
+      // if (isWasOffer) {
+      //   throw new ForbiddenException('Вы уже спонсировали этот подарок');
+      // }
+      if (raised === price) {
         throw new ForbiddenException('Сбор на подарок уже закрыт');
       }
       if (raised + amount > price) {
-        throw new BadRequestException('Указанная сумма превышает стоимость');
+        throw new BadRequestException(
+          `Указанная сумма превышает стоимость. Уменшите до ${price - raised}`,
+        );
       }
     } catch (err) {
       this.logger.error(
@@ -41,7 +43,6 @@ export class WishesGuard implements CanActivate {
       );
       throw err;
     }
-
     return true;
   }
 }
