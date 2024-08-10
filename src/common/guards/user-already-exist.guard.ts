@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { Request } from 'express';
-import { User } from 'src/users/entities/user.entity';
 import { MAP_EXCEPTION_TEXT } from 'src/constants/constants';
 
 @Injectable()
@@ -18,10 +17,11 @@ export class UserAlreadyExist implements CanActivate {
     const request = ctx.getRequest<Request>();
     const { username, email } = request.body;
 
-    let existingUser: User;
-    if (username !== undefined || email !== undefined) {
-      existingUser = await this.userService.findUserByBody(username, email);
-    }
+    const queryConditions = [];
+    if (username) queryConditions.push({ username });
+    if (email) queryConditions.push({ email });
+
+    const existingUser = await this.userService.findUserByFields(queryConditions);
 
     if (existingUser) {
       throw new ConflictException(MAP_EXCEPTION_TEXT.user.alreadyExists);

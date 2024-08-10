@@ -70,6 +70,13 @@ export class UsersService {
       where: [{ username: name }, { email: mail }],
     });
   }
+
+  async findUserByFields(fields: Object[]) {
+    return await this.usersRepository.findOne({
+      where: fields,
+    });
+  }
+
   async findOwnWish(user: User): Promise<Wish[]> {
     return await this.wishSevice.findWishesByUsername(user.username);
   }
@@ -90,7 +97,16 @@ export class UsersService {
     updateUserDto: UpdateUserDto,
   ): Promise<UserProfileResponseDto> {
     const updatedUserDto = await this.handlePasswordUpdate(updateUserDto);
-    return await this.usersRepository.save({ ...user, ...updatedUserDto });
+    const updatedFields: UpdateUserDto = {}
+
+    for(const key in updatedUserDto) {
+      if (updatedUserDto[key] !== undefined && updatedUserDto[key] !== user[key]) {
+        updatedFields[key] = updatedUserDto[key] 
+      }
+    }
+    if (Object.keys(updatedFields).length) {
+      return await this.usersRepository.save({ ...user, ...updatedFields });
+    }
   }
 
   async createUser(userData: CreateUserDto): Promise<User> {
