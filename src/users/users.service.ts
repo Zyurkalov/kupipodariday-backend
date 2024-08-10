@@ -61,7 +61,7 @@ export class UsersService {
   // }
 
   async findUserByQuery(value: string, field = 'username'): Promise<User> {
-    return await this.usersRepository.findOne({ where: { [field]: value } });
+    return await this.usersRepository.findOneOrFail({ where: { [field]: value } });
   }
 
   // для поиска внутри гардов, где вызывать ошибку "OrFail" не нужно

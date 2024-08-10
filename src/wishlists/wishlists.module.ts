@@ -18,7 +18,8 @@ import { OwnerCheckGuard } from 'src/common/guards/ckeck-owner.guard';
     forwardRef(() => AuthModule),
   ],
   controllers: [WhishlistsController],
-  providers: [WhishlistsService, WishesService, OwnerCheckGuard],
+  // providers: [WhishlistsService, WishesService, OwnerCheckGuard],
+  providers: [WhishlistsService],
   exports: [WhishlistsService],
 })
 export class WhishlistsModule {}
