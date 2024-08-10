@@ -8,6 +8,7 @@ import { WishesModule } from 'src/wishes/wishes.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { WishesService } from 'src/wishes/wishes.service';
 import { Wish } from 'src/wishes/entities/wish.entity';
+import { OwnerCheckGuard } from 'src/common/guards/ckeck-owner.guard';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { Wish } from 'src/wishes/entities/wish.entity';
     forwardRef(() => AuthModule),
   ],
   controllers: [WhishlistsController],
-  providers: [WhishlistsService, WishesService],
+  providers: [WhishlistsService, WishesService, OwnerCheckGuard],
   exports: [WhishlistsService],
 })
 export class WhishlistsModule {}

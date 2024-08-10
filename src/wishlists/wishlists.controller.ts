@@ -22,10 +22,12 @@ import { Wishlist } from './entities/wishlist.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { AuthUser } from 'src/common/decorator/user.decorator';
 import { User } from 'src/users/entities/user.entity';
+import { MAP_PATH } from 'src/constants/constants';
+import { OwnerCheckGuard } from 'src/common/guards/ckeck-owner.guard';
 
-@ApiTags('wishlist')
+@ApiTags(MAP_PATH.wishlist)
 @ApiExtraModels(Wishlist)
-@Controller('wishlistlists')
+@Controller(MAP_PATH.wishlist)
 export class WhishlistsController {
   constructor(private readonly whishlistsService: WhishlistsService) {}
 
@@ -57,11 +59,11 @@ export class WhishlistsController {
   @ApiOkResponse({ type: Wishlist })
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Wishlist> {
-    return this.whishlistsService.findOne(+id);
+    return this.whishlistsService.getOneOrThrow(+id);
   }
 
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, OwnerCheckGuard)
   @ApiOkResponse({ type: Wishlist })
   @Patch(':id')
   update(
@@ -72,7 +74,7 @@ export class WhishlistsController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, OwnerCheckGuard)
   @ApiOkResponse({ type: Wishlist })
   @Delete(':id')
   remove(@Param('id') id: string): Promise<Wishlist> {

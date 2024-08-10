@@ -8,7 +8,7 @@ import { LocalStrategy } from './strategy/local.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { JwtConfigFactory } from 'src/config/jwt-config.factory';
 import { ConfigModule } from '@nestjs/config';
-import { UserAlreadyExist } from './guards/user-already-exist.guard';
+import { UserAlreadyExist } from '../common/guards/user-already-exist.guard';
 
 @Module({
   imports: [

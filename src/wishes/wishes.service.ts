@@ -1,10 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { UpdateWishDto } from './dto/update-wish.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Wish } from './entities/wish.entity';
 import { FindManyOptions, In, Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
+import { MAP_EXCEPTION_TEXT } from 'src/constants/constants';
 
 @Injectable()
 export class WishesService {
@@ -31,13 +37,13 @@ export class WishesService {
     });
     return wishlist;
   }
-  async getUserWish(username: string): Promise<Wish[]> {
+  async findAllUsersWish(username: string): Promise<Wish[]> {
     return await this.wishRepository.find({
       where: { owner: { username } },
     });
   }
 
-  async getWishesByUsername(username: string): Promise<Wish[]> {
+  async findWishesByUsername(username: string): Promise<Wish[]> {
     const wish = await this.wishRepository.find({
       where: { owner: { username: username } },
       relations: ['owner', 'offers'],
@@ -46,17 +52,24 @@ export class WishesService {
   }
 
   async getOne(id: number): Promise<Wish> {
-    // const test = await this.wishRepository.findOne({ where: { id: itemId } })
-    // // console.log(test)
-    // const wish = await this.wishRepository.findOneOrFail({ where: { id } });
     const wish = await this.wishRepository.findOneOrFail({
       where: { id },
       relations: ['owner', 'offers'],
     });
     return wish;
   }
+  async getOneOrThrow(id: number) {
+    const findedWishList = await this.wishRepository.findOne({
+      where: { id },
+      relations: ['owner'],
+    });
+    if (!findedWishList) {
+      throw new NotFoundException(MAP_EXCEPTION_TEXT.itsNull);
+    }
+    return findedWishList;
+  }
 
-  async getAllByArrayIds(wishesId: Array<number>): Promise<Array<Wish>> {
+  async findAllByArrayIds(wishesId: Array<number>): Promise<Array<Wish>> {
     const wishList = await this.wishRepository.find({
       where: { id: In(wishesId) },
       relations: ['owner', 'offers'],
@@ -78,22 +91,21 @@ export class WishesService {
     return { name, link, image, price, description };
   }
 
-  // async copy(wishId: number, user: User) {
-  //   const wish = await this.getOne(wishId);
-  //   const { id, createdAt, updatedAt, offers, owner, raised, copied, ...otherData } = wish;
-  //   await this.incrementCopyCount(id);
-  //   await this.wishRepository.update(id, { copied: copied + 1 });
-  //   await this.create(user, otherData);
-  //   return {};
-  // }
-
   async copy(wishId: number, user: User) {
-    console.log('------------------------------------');
-    const wish = await this.getUpdateWishDto(wishId);
-    await this.incrementCopyCount(wishId);
+    const userWishes: Wish[] = await this.findWishesByUsername(user.username);
+    const referenceWish = await this.getUpdateWishDto(wishId);
+    const { name: refName, price: refPrice, link: refLink } = referenceWish;
 
-    // await this.wishRepository.update(id, { copied: copied + 1 });
-    await this.create(user, wish);
+    const isDuplicate = userWishes.some(
+      ({ name, link, price }) =>
+        name === refName && link === refLink && price === refPrice,
+    );
+
+    if (isDuplicate) {
+      throw new ForbiddenException('У вас уже есть этот подарок');
+    }
+    await this.incrementCopyCount(wishId);
+    await this.create(user, referenceWish);
     return {};
   }
 
@@ -127,7 +139,10 @@ export class WishesService {
 
   async remove(id: number): Promise<Wish> {
     const wish = await this.getOne(id);
-    await this.wishRepository.delete(id);
-    return wish;
+    if (wish.raised === 0) {
+      await this.wishRepository.delete(id);
+      return wish;
+    }
+    throw new ConflictException(MAP_EXCEPTION_TEXT.wish.raisedNotNull);
   }
 }

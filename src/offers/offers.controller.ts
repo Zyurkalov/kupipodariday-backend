@@ -12,13 +12,14 @@ import { AuthUser } from 'src/common/decorator/user.decorator';
 import { User } from 'src/users/entities/user.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { Offer } from './entities/offer.entity';
-import { WishesGuard } from './guards/wishes.guard';
+import { WishesGuard } from './guards/offers.guard';
+import { MAP_PATH } from 'src/constants/constants';
 
-@ApiTags('offers')
+@ApiTags(MAP_PATH.offers)
 @ApiExtraModels(Offer)
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('offers')
+@Controller(MAP_PATH.offers)
 export class OffersController {
   constructor(private readonly offersService: OffersService) {}
 

@@ -22,14 +22,15 @@ import { Wish } from './entities/wish.entity';
 import { AuthUser } from 'src/common/decorator/user.decorator';
 import { User } from 'src/users/entities/user.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { WishOwnerGuard } from 'src/wishes/guards/wish-owner.guard';
-import { WishNotOwnerGuard } from 'src/wishes/guards/wish-not-owner.guard';
+// import { WishNotOwnerGuard } from 'src/wishes/guards/wish-not-owner.guard';
+import { MAP_PATH } from 'src/constants/constants';
+import { OwnerCheckGuard } from 'src/common/guards/ckeck-owner.guard';
 
-@ApiTags('wishes')
+@ApiTags(MAP_PATH.wishes)
 @ApiExtraModels(Wish)
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('wishes')
+@Controller(MAP_PATH.wishes)
 export class WishesController {
   constructor(private readonly wishesService: WishesService) {}
 
@@ -67,11 +68,11 @@ export class WishesController {
   @ApiOkResponse({ type: Wish })
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Wish> {
-    return this.wishesService.getOne(+id);
+    return this.wishesService.getOneOrThrow(+id);
   }
 
   @ApiOkResponse({ type: UpdateWishDto })
-  @UseGuards(WishOwnerGuard)
+  @UseGuards(OwnerCheckGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -81,14 +82,13 @@ export class WishesController {
   }
 
   @ApiOkResponse({ type: Wish })
-  @UseGuards(WishOwnerGuard)
+  @UseGuards(OwnerCheckGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    console.log(id);
+  remove(@Param('id') id: string): Promise<Wish> | Promise<void> {
     return this.wishesService.remove(+id);
   }
 
-  @UseGuards(WishNotOwnerGuard)
+  // @UseGuards(WishNotOwnerGuard)
   @ApiResponse({
     status: 201,
     type: Object,

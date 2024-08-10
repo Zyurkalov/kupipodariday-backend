@@ -4,13 +4,13 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { SigninUserDto } from './dto/signin-user.dto';
 import { UsersService } from 'src/users/users.service';
-import { UserAlreadyExist } from './guards/user-already-exist.guard';
+import { UserAlreadyExist } from '../common/guards/user-already-exist.guard';
 import { SignupUserResponseDto } from './dto/signup-user-response.dto';
 import { SigninUserResponseDto } from './dto/signin-user-response.dto';
-import { MAP_ERRORS } from 'src/constants/constants';
+import { MAP_ERRORS, MAP_PATH } from 'src/constants/constants';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 
-@ApiTags('auth')
+@ApiTags(MAP_PATH.auth)
 @Controller()
 export class AuthController {
   constructor(

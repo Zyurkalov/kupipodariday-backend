@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateWishlistDto } from './dto/create-wishlist.dto';
 import { UpdateWhishlistDto } from './dto/update-wishlist.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,6 +6,7 @@ import { Wishlist } from './entities/wishlist.entity';
 import { Repository } from 'typeorm';
 import { WishesService } from 'src/wishes/wishes.service';
 import { User } from 'src/users/entities/user.entity';
+import { MAP_EXCEPTION_TEXT } from 'src/constants/constants';
 
 @Injectable()
 export class WhishlistsService {
@@ -18,7 +19,7 @@ export class WhishlistsService {
   async create(user: User, createWishlistDto: CreateWishlistDto) {
     const { itemsId, ...wishData } = createWishlistDto;
     const uniqueIds = this.getUniqueIds(itemsId);
-    const wishes = await this.wishesService.getAllByArrayIds(uniqueIds);
+    const wishes = await this.wishesService.findAllByArrayIds(uniqueIds);
 
     const wishesId = wishes.map((wish) => wish.id);
     await this.wishesService.incrementCopyCount(wishesId);
@@ -35,17 +36,33 @@ export class WhishlistsService {
     return await this.wishlistRepository.find({ relations: ['owner'] });
   }
 
-  async findOne(id: number) {
+  async getOneOrThrow(id: number) {
+    const findedWishList = await this.wishlistRepository.findOne({
+      where: { id },
+      relations: ['owner'],
+    });
+    if (!findedWishList) {
+      throw new NotFoundException(MAP_EXCEPTION_TEXT.itsNull);
+    }
+    return findedWishList;
+  }
+
+  async getOne(id: number) {
     return this.wishlistRepository.findOneOrFail({
       where: { id },
       relations: ['owner'],
+    });
+  }
+  async findAllUserWishlists(username: string) {
+    return this.wishlistRepository.find({
+      where: { owner: { username } },
     });
   }
 
   async update(id: number, updateWhishlistDto: UpdateWhishlistDto) {
     const { itemsId, ...wishData } = updateWhishlistDto;
 
-    const oldWishlist = await this.findOne(id);
+    const oldWishlist = await this.getOne(id);
     const { items, ...data } = oldWishlist;
 
     const currentWishIds = items.map((obj) => obj.id);
@@ -53,8 +70,8 @@ export class WhishlistsService {
     // const uniqueIds = this.getUniqueIds(itemsId)
     // const uniqueWishIds = uniqueIds.filter(num => !currentWishIds.includes(num));
     const uniqueWishIds = this.getUniqueWishIds(itemsId, currentWishIds);
+    const newWishes = await this.wishesService.findAllByArrayIds(uniqueWishIds);
 
-    const newWishes = await this.wishesService.getAllByArrayIds(uniqueWishIds);
     await this.wishesService.incrementCopyCount(uniqueWishIds);
     return await this.wishlistRepository.save({
       ...data,
@@ -72,7 +89,7 @@ export class WhishlistsService {
   }
 
   async remove(id: number): Promise<Wishlist> {
-    const removingWishlist = await this.findOne(id);
+    const removingWishlist = await this.getOne(id);
     return await this.wishlistRepository.remove(removingWishlist);
   }
 }

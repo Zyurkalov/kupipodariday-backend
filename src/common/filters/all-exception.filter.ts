@@ -26,31 +26,33 @@ export class AllExceptionFilter implements ExceptionFilter {
     let errorException: HttpException = new InternalServerErrorException(
       'Ошибка сервера',
     );
-    let status = errorException.getStatus()
+    const status = errorException.getStatus();
 
     console.log('------------------ExceptionFilter------------------------');
 
     if (exception instanceof HttpException) {
-      if(exception instanceof UnauthorizedException) {
-        errorException = exception
-        errorException.message = MAP_ERRORS.unauthorized.message
+      if (exception instanceof UnauthorizedException) {
+        errorException = exception;
+        errorException.message =
+          errorException.message || MAP_ERRORS.unauthorized.message;
       }
-      if(exception instanceof EntityNotFoundError) {
-        errorException = exception
-        errorException.message = MAP_ERRORS.notFound.message
+      if (exception instanceof EntityNotFoundError) {
+        errorException = exception;
+        errorException.message =
+          errorException.message || MAP_ERRORS.notFound.message;
       }
-      if(exception instanceof ConflictException) {
-        errorException = exception
-        errorException.message = MAP_ERRORS.userAlreadyExists.message
+      if (exception instanceof ConflictException) {
+        errorException = exception;
+        errorException.message =
+          errorException.message || MAP_ERRORS.userAlreadyExists.message;
       }
-      if(exception instanceof NotFoundException) {
-        errorException = exception
-        errorException.message = MAP_ERRORS.notFound.message
-      }
-      else {
+      if (exception instanceof NotFoundException) {
+        errorException = exception;
+        errorException.message =
+          errorException.message || MAP_ERRORS.notFound.message;
+      } else {
         errorException = exception;
       }
-      
     }
     // if (exception instanceof EntityNotFoundError) {
     //   status = MAP_ERRORS.notFound.statusCode;

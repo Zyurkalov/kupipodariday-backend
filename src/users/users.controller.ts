@@ -23,21 +23,22 @@ import { UserWishesDto } from './dto/user-wihes.dto';
 import { AuthUser } from 'src/common/decorator/user.decorator';
 import { User } from './entities/user.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { MAP_ERRORS } from 'src/constants/constants';
+import { MAP_ERRORS, MAP_PATH } from 'src/constants/constants';
 import { Wish } from 'src/wishes/entities/wish.entity';
+import { UserAlreadyExist } from 'src/common/guards/user-already-exist.guard';
 
-@ApiTags('users')
+@ApiTags(MAP_PATH.users)
 @ApiExtraModels(User)
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('users')
+@Controller(MAP_PATH.users)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @ApiOkResponse({ type: UserProfileResponseDto })
   @Get('me')
   getMe(@AuthUser() user: User): Promise<UserProfileResponseDto> {
-    return this.usersService.getMe(user);
+    return this.usersService.getAuthUserData(user);
   }
 
   @ApiOkResponse({
@@ -47,6 +48,7 @@ export class UsersController {
     status: MAP_ERRORS.validationError.statusCode,
     description: MAP_ERRORS.validationError.message,
   })
+  @UseGuards(UserAlreadyExist)
   @Patch('me')
   async update(
     @AuthUser() user: User,
@@ -61,8 +63,7 @@ export class UsersController {
   })
   @Get('me/wishes')
   async findMyWish(@AuthUser() user: User): Promise<Wish[]> {
-    return await this.usersService.getMyWish(user);
-    // return await this.usersService.getOwnWishes(user.id);
+    return await this.usersService.findOwnWish(user);
   }
 
   @ApiOkResponse({ type: UserPublicProfileResponseDto })
@@ -70,7 +71,7 @@ export class UsersController {
   async findUser(
     @Param('username') userName: string,
   ): Promise<UserPublicProfileResponseDto> {
-    return this.usersService.findOneByQuery(userName);
+    return this.usersService.findUserByQuery(userName);
   }
 
   @ApiOkResponse({

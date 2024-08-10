@@ -1,4 +1,9 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  UnauthorizedException,
+  forwardRef,
+} from '@nestjs/common';
 import { User } from 'src/users/entities/user.entity';
 import { verifyHash } from 'src/common/helpers/hash';
 import { UsersService } from 'src/users/users.service';
@@ -26,9 +31,10 @@ export class AuthService {
       where: { username },
     });
     const chekingPassword = await verifyHash(password, user.password);
+
     if (user && chekingPassword) {
       return this.login(user);
     }
-    return null;
+    throw new UnauthorizedException('Некорректный пароль');
   }
 }
